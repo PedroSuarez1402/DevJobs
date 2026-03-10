@@ -12,16 +12,16 @@
 </head>
 <body class="bg-[#100E17] font-sans text-white">
     <header class="site-header contenedor">
-        <div class="nombre-sitio py-10 flex justify-between items-center">
+        <div class="nombre-sitio py-10 flex flex-col md:flex-row justify-between items-center gap-10">
             <h1>
                 <a href="/" class="text-6xl font-black text-white no-underline">DevJobs</a>
             </h1>
 
             {{#if barra}}
-                <div class="buscador flex-1 flex justify-end">
-                    <form action="#" class="relative w-full md:w-2/5">
-                        <input type="text" placeholder="Buscar vacante..." class="w-full bg-white/10 border-none rounded-xl px-8 py-4 text-white text-2xl focus:outline-none focus:ring-2 focus:ring-[#00C897]">
-                        <input type="submit" value="Buscar" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-no-repeat bg-center bg-contain cursor-pointer" style="background-image: url('/img/lupa.png'); text-indent: -9999px;">
+                <div class="buscador w-full md:w-1/3 flex justify-end">
+                    <form action="#" class="relative w-full">
+                        <input type="text" placeholder="Buscar vacante..." class="w-full bg-white/10 border-none rounded-xl px-8 py-4 text-white text-xl focus:outline-none focus:ring-2 focus:ring-[#00C897]">
+                        <input type="submit" value="Buscar" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 bg-no-repeat bg-center bg-contain cursor-pointer opacity-50 hover:opacity-100" style="background-image: url('/img/lupa.png'); text-indent: -9999px;">
                     </form>
                 </div>
             {{/if}}

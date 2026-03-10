@@ -80,7 +80,8 @@ h3 {
     text-align: center;
 }
 
-/** Header **/
+/** Header - Comentado para usar Tailwind **/
+/*
 .tagline {
     font-size: 2.2rem;
     color: #ffffff;
@@ -148,6 +149,7 @@ h3 {
 .buscador input[type="submit"]:hover {
     cursor: pointer;
 }
+*/
 
 @media (min-width:768px) {
     .candidato,
