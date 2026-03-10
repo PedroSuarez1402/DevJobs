@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app.css">
+    <title>{{nombrePagina}}</title>
+</head>
+<body class="bg-[#100E17] font-sans text-white">
+    <header class="site-header contenedor">
+        <div class="nombre-sitio py-10 flex justify-between items-center">
+            <h1>
+                <a href="/" class="text-6xl font-black text-white no-underline">DevJobs</a>
+            </h1>
+
+            {{#if barra}}
+                <div class="buscador flex-1 flex justify-end">
+                    <form action="#" class="relative w-full md:w-2/5">
+                        <input type="text" placeholder="Buscar vacante..." class="w-full bg-white/10 border-none rounded-xl px-8 py-4 text-white text-2xl focus:outline-none focus:ring-2 focus:ring-[#00C897]">
+                        <input type="submit" value="Buscar" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-no-repeat bg-center bg-contain cursor-pointer" style="background-image: url('/img/lupa.png'); text-indent: -9999px;">
+                    </form>
+                </div>
+            {{/if}}
+        </div>
+
+        {{#if tagline}}
+            <div class="tagline text-center md:text-left mt-8">
+                <p class="text-4xl font-bold mb-12">{{tagline}}</p>
+                {{#if boton}}
+                    <a href="/vacantes/nueva" class="inline-block bg-[#00C897] hover:bg-[#0a9b77] text-white font-bold uppercase py-6 px-24 rounded-lg text-3xl transition-colors">Publicar Vacante</a>
+                {{/if}}
+            </div>
+        {{/if}}
+    </header>
+
+    <main class="contenido-principal contenedor py-20">
+        {{{body}}}
+    </main>
+    
+</body>
+</html>

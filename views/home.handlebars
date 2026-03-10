@@ -1,0 +1,22 @@
+<section class="vacantes mt-20">
+    <h2 class="text-5xl font-bold text-gray-500 mb-12">Vacantes Disponibles</h2>
+    
+    {{#if vacantes.length}}
+        <div class="space-y-8">
+            {{#each vacantes}}
+                <div class="vacante flex items-center justify-between p-12 border-b border-gray-800 last:border-0 hover:bg-white/5 transition-colors rounded-xl">
+                    <div class="caja flex-2">
+                        <h3 class="text-4xl font-bold text-white mb-2">{{titulo}}</h3>
+                        <p class="text-2xl text-gray-400 font-bold mb-2">{{empresa}}</p>
+                        <p class="text-2xl text-white font-medium capitalize">{{contrato}}</p>
+                    </div>
+                    <div class="caja flex-1 flex justify-end">
+                        <a href="/vacantes/{{url}}" class="bg-[#00A4B6] hover:bg-[#038594] text-white font-bold uppercase py-4 px-12 rounded-lg text-2xl transition-colors">Más Info</a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <p class="text-3xl text-center text-gray-400 mt-20">No hay vacantes disponibles en este momento.</p>
+    {{/if}}
+</section>
