@@ -14,23 +14,35 @@ El proyecto DevJobs se está construyendo sobre una base sólida y moderna de Ja
 
 ## 2. Base de Datos y ORM (Sugerencia)
 
-Dado el carácter relacional de la aplicación (usuarios, vacantes, postulaciones, seguidores), una base de datos SQL es la opción más adecuada. La elección entre PostgreSQL y MySQL depende de las preferencias del equipo, pero ambas son excelentes opciones.
+Dado el carácter relacional de la aplicación (usuarios, vacantes, postulaciones, seguidores), una base de datos SQL es la opción más adecuada. La elección es mySQL por su simplicidad y compatibilidad con la mayoría de las herramientas y bibliotecas utilizadas en el proyecto.
 
-### Base de Datos Sugerida: **PostgreSQL**
-
-- **Justificación:**
-  - **Robustez y Fiabilidad:** PostgreSQL es conocido por su estricto cumplimiento del estándar SQL y su arquitectura robusta, lo que garantiza la integridad de los datos.
-  - **Tipos de Datos Avanzados:** Soporta tipos de datos complejos como `JSONB` (JSON binario), que sería extremadamente útil para almacenar el contenido de los CVs generados dinámicamente sin necesidad de una estructura rígida.
-  - **Escalabilidad:** Ofrece un excelente rendimiento en consultas complejas y es altamente escalable, lo cual se alinea con el requerimiento no funcional de escalabilidad del proyecto.
-
-### ORM Sugerido: **Prisma**
+### Base de Datos Sugerida: **MySQL**
 
 - **Justificación:**
-  - **Seguridad de Tipos (Type-Safety):** Prisma es un ORM de nueva generación que ofrece autocompletado y seguridad de tipos en el editor de código (si se usa TypeScript o JSDoc), lo que reduce drásticamente los errores en tiempo de ejecución.
-  - **Migraciones Declarativas:** Su sistema de migraciones es declarativo y fácil de usar. Se define el esquema en un archivo `schema.prisma` y Prisma se encarga de generar y ejecutar las migraciones SQL, simplificando la evolución de la base de datos.
-  - **Cliente Optimizado:** El cliente de Prisma está diseñado para ser ligero y altamente optimizado, resultando en consultas más rápidas en comparación con otros ORMs más tradicionales.
-  - **Excelente para Lógica Relacional Compleja:** Facilita la gestión de relaciones complejas, como las que existen en el sistema de seguidores o miembros de canales, a través de una API intuitiva y potente.
+  - **Simplicidad y Familiaridad:** MySQL es uno de los motores de bases de datos más populares y ampliamente utilizados. Su sintaxis es clara y familiar para los desarrolladores, lo que facilita el aprendizaje y la mantención del código.
+  - **Compatibilidad con Node.js:** Es compatible con Node.js y tiene una amplia gama de bibliotecas y herramientas disponibles, lo que simplifica la integración en el proyecto.
+  - **Escalabilidad y Rendimiento:** MySQL es altamente escalable y ofrece un rendimiento excelente para las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) comunes en una aplicación.
 
-### Alternativa (Sequelize)
+### ORM Sugerido: **Sequelize**
 
-- **Sequelize** es un ORM más maduro y tradicional para Node.js. Aunque es muy potente y compatible con PostgreSQL, MySQL, y otras bases de datos, su API puede ser más verbosa y no ofrece la misma seguridad de tipos que Prisma. Sería una opción viable si el equipo tiene experiencia previa con él, pero para un proyecto nuevo, **Prisma ofrece una experiencia de desarrollo superior**.
+- **Justificación:**
+  - **Facilidad de Uso:** Sequelize es un ORM muy popular y fácil de usar. Su API es intuitiva y permite realizar consultas complejas con relativamente pocas líneas de código.
+  - **Compatibilidad con MySQL:** Es compatible con MySQL y ofrece una amplia gama de funcionalidades, como soporte para transacciones, migraciones y seeders.
+  - **Documentación y Comunidad Activa:** Sequelize tiene una documentación extensa y una comunidad activa, lo que facilita la resolución de problemas y la adopción en proyectos nuevos.
+
+### Estructura de proyecto
+
+- **Backend:**
+  - **`/src`:** Contiene todo el código fuente del backend.
+    - **`/controllers`:** Maneja las solicitudes HTTP y coordina la lógica de negocio.
+    - **`/models`:** Define los modelos de datos utilizando Sequelize.
+    - **`/routes`:** Configura las rutas de la API.
+    - **`/services`:** Contiene la lógica de negocio más compleja.
+    - **`/utils`:** Funciones y utilidades reutilizables.
+  - **`/config`:** Archivos de configuración, como la conexión a la base de datos.
+  - **`/migrations`:** Scripts para migrar la base de datos.
+  - **`/seeders`:** Scripts para poblar la base de datos con datos de prueba.
+
+- **Frontend:**
+  - **`/views`:** Plantillas Handlebars para renderizar las vistas del lado del servidor.
+  - **`/public`:** Archivos estáticos como CSS, JavaScript y imágenes.
