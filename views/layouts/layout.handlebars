@@ -25,6 +25,16 @@
                     </form>
                 </div>
             {{/if}}
+            {{!-- Boton para inciar sesion o registrarse --}}
+            <div class="flex justify-end">
+                {{#if usuario}}
+                <a href="/perfil" class="hover:bg-[#038594] text-white font-bold uppercase py-4 px-6 rounded-lg text-xl transition-colors">Perfil</a>
+                <a href="/logout" class="hover:bg-[#038594] text-white font-bold uppercase py-4 px-6 rounded-lg text-xl transition-colors">Cerrar Sesion</a>
+                {{else}}
+                <a href="/auth/login" class="hover:bg-[#038594] text-white font-bold uppercase py-4 px-6 rounded-lg text-xl transition-colors">Iniciar Sesion</a>
+                <a href="/auth/register" class="hover:bg-[#0a9b77] text-white font-bold uppercase py-4 px-6 rounded-lg text-xl transition-colors">Registrarse</a>
+                {{/if}}
+            </div>
         </div>
 
         {{#if tagline}}

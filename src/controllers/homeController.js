@@ -9,7 +9,7 @@ export const home = async (req, res) => {
             nombrePagina: 'devJobs',
             tagline: 'Encuentra y publica empleos para desarrolladores',
             barra: true,
-            boton: true
+            boton: true,
             // vacantes: vacantes
         });
         
