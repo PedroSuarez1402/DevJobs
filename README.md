@@ -41,3 +41,19 @@ Este proyecto fue desarrollado como una aplicación full-stack para demostrar la
    ```
    http://localhost:3000
    ```
+
+## Manejar la base de datos
+
+Este proyecto tiene diseñado migraciones para tener un control en la base de datos, para ello se debe ejecutar el siguiente comando:
+```bash
+npx sequelize-cli db:migrate
+```
+Para crear una nueva migracion vacias se debe ejecutar el siguiente comando:
+```bash
+npx sequelize-cli migration:generate --name nombre-de-tu-nueva-tabla
+```
+
+Para poder hacer un rollback y devolver la ultima migracion se debe ejecutar el siguiente comando:
+```bash
+npx sequelize-cli db:migrate:undo
+```

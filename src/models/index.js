@@ -8,11 +8,12 @@ import Miembros_Canal from './Miembros_Canal.js';
 import Seguidores from './Seguidores.js';
 
 // Relaciones 1:N
+// Un usuario puede tener muchas vacantes
 Usuario.hasMany(CVs, { foreignKey: 'usuario_id' });
-CVs.belongsTo(Usuario, { foreignKey: 'usuario_id' });
+CVs.belongsTo(Usuario, { foreignKey: 'usuario_id' }); // Un CV pertenece a un usuario
 
-Usuario.hasMany(Vacantes, { foreignKey: 'empleador_id' });
-Vacantes.belongsTo(Usuario, { foreignKey: 'empleador_id' });
+Usuario.hasMany(Vacantes, { foreignKey: 'empleador_id' }); // Un usuario puede tener muchas vacantes
+Vacantes.belongsTo(Usuario, { foreignKey: 'empleador_id' }); // Una vacante pertenece a un usuario
 
 Usuario.hasMany(Postulaciones, { foreignKey: 'candidato_id' });
 Postulaciones.belongsTo(Usuario, { foreignKey: 'candidato_id' });

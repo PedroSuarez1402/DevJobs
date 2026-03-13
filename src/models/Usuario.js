@@ -1,8 +1,12 @@
+// Importamos los tipos de  datos de sequelize ( String, Integer, Text, Date, Enum, ForeignKey, etc)
 import { DataTypes } from "sequelize";
+// Importamos la conexion de bases de datos que interactua directamente
 import db from "../config/db.js";
 
+// db.define define el nombre de la tabla y por dentro las columnas que va a tener
 const Usuario = db.define('usuarios',
     {
+        // Sequelize define la columna id automaticamente
         nombre: {
         type: DataTypes.STRING(60),
         allowNull: false
