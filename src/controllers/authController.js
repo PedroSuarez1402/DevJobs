@@ -50,7 +50,7 @@ export const login = async (req, res) => {
             throw new Error('Todos los campos son obligatorios');
         }
         /* Validar que el usuario exista */
-        const usuario = await authService.loginUsuario({
+        const usuario = await loginUsuario({
             email,
             password
         });
