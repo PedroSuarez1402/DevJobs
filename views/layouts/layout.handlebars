@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/app.css">
+    <title>{{nombrePagina}} | DevJobs</title>
+</head>
+<body class="bg-gray-950 font-sans text-gray-200 min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-400">
+
+    {{> navbar}}
+
+    <div class="flex flex-1 relative">
+        {{#if usuario}}
+            {{> sidebar}}
+        {{/if}}
+
+        <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-hidden">
+            {{#if tagline}}
+                <header class="mb-10 text-center sm:text-left">
+                    <h2 class="text-3xl font-black text-white tracking-tight leading-tight">{{tagline}}</h2>
+                    {{#if usuario}}
+                        <div class="mt-4">
+                            <a href="/vacantes/nueva" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-2.5 px-6 rounded-lg text-sm transition-all transform hover:-translate-y-0.5 shadow-lg shadow-emerald-500/20 active:scale-95">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                                </svg>
+                                Publicar Vacante
+                            </a>
+                        </div>
+                    {{/if}}
+                </header>
+            {{/if}}
+
+            <div class="space-y-6">
+                {{{body}}}
+            </div>
+        </main>
+    </div>
+
+    {{> footer}}
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+
+            if (toggleBtn && sidebar) {
+                toggleBtn.addEventListener('click', () => {
+                    // Toggle hidden class for desktop, and possibly a translation for mobile if we add it
+                    sidebar.classList.toggle('hidden');
+                    sidebar.classList.toggle('md:block');
+                });
+            }
+
+            // Ocultar alertas después de 5 segundos
+            const alerts = document.querySelectorAll('.alerta');
+            if (alerts.length > 0) {
+                setTimeout(() => {
+                    alerts.forEach(alert => {
+                        alert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                        setTimeout(() => alert.remove(), 500);
+                    });
+                }, 5000);
+            }
+        });
+    </script>
+</body>
+</html>
