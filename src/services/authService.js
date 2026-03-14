@@ -1,6 +1,8 @@
 /* Servicio de autenticacion */
 import { encriptarPassword, compararPassword } from '../utils/passwords.js';
 import Usuario from '../models/Usuario.js';
+import { generarToken } from '../utils/token.js';
+import { emailRegistro } from '../utils/emails.js';
 
 /* Funcion logica para crear usuario */
 export const crearUsuario = async (datosUsuario) => {
@@ -16,12 +18,20 @@ export const crearUsuario = async (datosUsuario) => {
     }else{
         /* Encriptar la contraseña */
         const passwordEncriptado = await encriptarPassword(password);
+        const token = generarToken();
         /* Crear el usuario */
         const usuario = await Usuario.create({
             nombre,
             email,
-            password: passwordEncriptado
+            password: passwordEncriptado,
+            token: token
         });
+
+        await emailRegistro({
+            nombre: usuario.nombre,
+            email: usuario.email,
+            token: usuario.token
+        })
         return usuario;
     }
 }

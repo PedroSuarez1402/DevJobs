@@ -20,6 +20,14 @@ const Usuario = db.define('usuarios',
             type: DataTypes.STRING(60),
             allowNull: false
         },
+        token: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        confirmado: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
         foto_perfil: {
             type: DataTypes.STRING(255),
             allowNull: true
