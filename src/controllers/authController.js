@@ -5,7 +5,10 @@ import { crearUsuario, loginUsuario } from '../services/authService.js'; // Impo
 export const formularioRegistro = (req, res) => {
     res.render('auth/register', {
         nombrePagina: 'Registro de Usuario',
-        tagline: 'Crea tu cuenta en devJobs'
+        tagline: 'Crea tu cuenta en devJobs',
+        mostrarNav: false,
+        centrarContenido: true,
+        ocultarBotonesAuth: true
     })
 }
 /* Funcion para registrarse en la aplicacion usando el service */
@@ -28,17 +31,20 @@ export const register = async (req, res) => {
         });
         /* Respuesta de exito */
         req.flash('exito', 'Cuenta creada correctamente');
-        res.redirect('/login');
+        res.redirect('/auth/login');
     } catch (error) {
         req.flash('error', error.message);
-        res.redirect('/register');
+        res.redirect('/auth/register');
     }
 }
 /* Funcion para mostrar el formulario de login */
 export const formularioLogin = (req, res) => {
     res.render('auth/login', {
         nombrePagina: 'Iniciar Sesión',
-        tagline: 'Accede a tu cuenta en devJobs'
+        tagline: 'Accede a tu cuenta en devJobs',
+        mostrarNav: false,
+        centrarContenido: true,
+        ocultarBotonesAuth: true
     })
 }
 /* Funcion para login en la aplicacion usando el service */

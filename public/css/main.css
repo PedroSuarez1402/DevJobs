@@ -1,3 +1,2 @@
 @import "tailwindcss";
-
-@import "./custom.css";
+/* Solo importamos Tailwind. El archivo custom.css ya no es necesario o se mantiene vacío. */
