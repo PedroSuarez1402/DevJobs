@@ -30,7 +30,7 @@
             {{#if usuario}}
             <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-400 font-medium hidden sm:inline-block">Hola, {{usuario.nombre}}</span>
-                <a href="/logout" class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Cerrar Sesión</a>
+                <a href="/auth/logout" class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Cerrar Sesión</a>
             </div>
             {{else}}
                 {{#unless ocultarBotonesAuth}}

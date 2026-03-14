@@ -60,11 +60,24 @@ export const login = async (req, res) => {
             email,
             password
         });
+        /* Guardar la sesion */
+        req.session.usuario = {
+            id: usuario.id,
+            nombre: usuario.nombre,
+            email: usuario.email,
+            foto_perfil: usuario.foto_perfil
+        }
         /* Respuesta de exito */
         req.flash('exito', 'Inicio de sesión correctamente');
         res.redirect('/');
     } catch (error) {
         req.flash('error', error.message);
-        res.redirect('/login');
+        res.redirect('/auth/login');
     }
+}
+
+export const cerrarSesion = (req, res) => {
+    req.session.destroy(() => {
+        res.redirect('/');
+    })
 }

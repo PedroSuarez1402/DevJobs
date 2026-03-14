@@ -19,6 +19,7 @@ app.use(flash());
 // Pasar los mensajes a todas las vistas
 app.use((req, res, next) => {
     res.locals.mensajes = req.flash();
+    res.locals.usuario = req.session.usuario || null;
     next();
 });
 // Habilidar handlebars como motor de plantillas definiendo un layout
