@@ -6,6 +6,8 @@
 - **RF-001:** El sistema debe permitir a los usuarios registrarse utilizando un correo electrónico y una contraseña.
 - **RF-002:** El sistema debe permitir a los usuarios iniciar sesión con sus credenciales.
 - **RF-003:** El sistema debe permitir a los usuarios cerrar sesión.
+- **RF-004:** El sistema debe validar la autenticación de los usuarios antes de permitirles acceder a funcionalidades protegidas, enviando un correo con un boton para confirmar la autenticacion.
+- **RF-005:** El sistema debe permitir a los usuarios recuperar su contraseña si la olviden, llenando un formulario y enviando un correo de recuperacion.
 
 ### 1.2. Gestión de Perfil y CV
 - **RF-004:** El sistema debe permitir a un usuario crear y mantener un perfil profesional, que incluya nombre, foto de perfil, y un resumen.
