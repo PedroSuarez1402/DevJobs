@@ -10,21 +10,24 @@ export default {
         email: 'pedro@recrutador.com',
         password: 'password123',
         resumen: 'Reclutador Senior con 10 años de experiencia.',
-        fecha_creacion: new Date()
+        fecha_creacion: new Date(),
+        confirmado: true
       },
       {
         nombre: 'Juan Candidato',
         email: 'juan@candidato.com',
         password: 'password123',
         resumen: 'Desarrollador Full Stack Jr.',
-        fecha_creacion: new Date()
+        fecha_creacion: new Date(),
+        confirmado: true
       },
       {
         nombre: 'Ana Dev',
         email: 'ana@dev.com',
         password: 'password123',
         resumen: 'Frontend Developer con React y Vue.',
-        fecha_creacion: new Date()
+        fecha_creacion: new Date(),
+        confirmado: true
       }
     ]);
 

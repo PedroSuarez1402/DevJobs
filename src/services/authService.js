@@ -46,6 +46,8 @@ export const loginUsuario = async (datosUsuario) => {
     })
     if(!existeUsuario){
         throw new Error('El email no está registrado');
+    }if (!existeUsuario.confirmado) {
+        throw new Error('Tu cuenta no ha sido confirmada. Por favor revisa tu correo electrónico.');
     }else{
         /* Comparar la contraseña */
         const passwordValido = await compararPassword(password, existeUsuario.password);
@@ -55,4 +57,19 @@ export const loginUsuario = async (datosUsuario) => {
             return existeUsuario;
         }
     }
+}
+export const confirmarCuenta = async (token) => {
+    const usuario = await Usuario.findOne({
+        where: {
+            token
+        }
+    });
+    if (!usuario){
+        throw new Error('El enlace no es valido o la cuenta ya fue confirmada.');
+    }
+    usuario.confirmado = true;
+    usuario.token = null;
+
+    await usuario.save();
+    return usuario;
 }

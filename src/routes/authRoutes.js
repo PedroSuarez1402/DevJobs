@@ -1,6 +1,6 @@
 /* Rutas para el registro y login de usuarios */
 import express from 'express';
-import { formularioRegistro , register, formularioLogin, login, cerrarSesion } from '../controllers/authController.js';
+import { formularioRegistro , register, formularioLogin, login, cerrarSesion, confirmar } from '../controllers/authController.js';
 
 const router = express.Router();
 
@@ -17,5 +17,8 @@ router.get('/login', formularioLogin);
 router.post('/login', login);
 
 router.get('/logout', cerrarSesion)
+
+// Ruta para confirmar cuenta
+router.get('/confirmar/:token', confirmar);
 
 export default router;

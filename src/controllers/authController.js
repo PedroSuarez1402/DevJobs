@@ -1,5 +1,5 @@
 /* Importaciones */
-import { crearUsuario, loginUsuario } from '../services/authService.js'; // Importamos el servicio de autenticacion
+import { confirmarCuenta, crearUsuario, loginUsuario } from '../services/authService.js'; // Importamos el servicio de autenticacion
 
 /* Funcion para mostrar el formulario de registrarse */
 export const formularioRegistro = (req, res) => {
@@ -80,4 +80,17 @@ export const cerrarSesion = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     })
+}
+
+export const confirmar = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        await confirmarCuenta(token);
+        req.flash('exito', '¡Cuenta confirmada Correctamente! Ya puedes iniciar sesion.');
+        res.redirect('/auth/login');
+    } catch (error) {
+        req.flash('error', error.message);
+        res.redirect('/auth/register');
+    }
 }
