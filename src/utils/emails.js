@@ -1,4 +1,7 @@
 import nodemailer from 'nodemailer';
+import fs from 'fs';
+import path from 'path';
+import Handlebars from 'handlebars';
 
 export const emailRegistro = async (datos) => {
     const { email, nombre, token } = datos;
@@ -12,16 +15,23 @@ export const emailRegistro = async (datos) => {
         }
     });
 
+    const __dirname = path.resolve();
+    const templatePath = path.join(__dirname, 'views', 'emails', 'confirmar-cuenta.handlebars');
+
+    const source = fs.readFileSync(templatePath, 'utf8');
+
+    const template = Handlebars.compile(source);
+
+    const htmlCompilado = template({
+        nombre: nombre,
+        url: `${process.env.BACKEND_URL}/auth/confirmar/${token}`
+    });
+
     await transport.sendMail({
         from: 'DevJobs <admin@devjobs.com>',
         to: email,
         subject: 'Confirma tu cuenta en DevJobs',
-        text: 'Confirma tu cuenta en DevJobs',
-        html: `
-            <p>Hola ${nombre}, comprueba tu cuenta en DevJobs.</p>
-            <p>Tu cuenta ya está casi lista, solo debes confirmarla haciendo clic en el siguiente enlace:</p>
-            <a href="${process.env.BACKEND_URL}/auth/confirmar/${token}">Confirmar Cuenta</a>
-            <p>Si no creaste esta cuenta, ignora este mensaje.</p>
-        `
-    })
+        text: 'Confirma tu cuenta en DevJobs', // Texto plano por si el gestor de correo no soporta HTML
+        html: htmlCompilado 
+    });
 }
