@@ -2,7 +2,7 @@
 import { encriptarPassword, compararPassword } from '../utils/passwords.js';
 import Usuario from '../models/Usuario.js';
 import { generarToken } from '../utils/token.js';
-import { emailRegistro } from '../utils/emails.js';
+import { emailRegistro, emailOlvidePassword } from '../utils/emails.js';
 
 /* Funcion logica para crear usuario */
 export const crearUsuario = async (datosUsuario) => {
@@ -68,6 +68,66 @@ export const confirmarCuenta = async (token) => {
         throw new Error('El enlace no es valido o la cuenta ya fue confirmada.');
     }
     usuario.confirmado = true;
+    usuario.token = null;
+
+    await usuario.save();
+    return usuario;
+}
+
+/* Funcion logica para recuperar contraseña */
+export const olvidePassword = async (email) => {
+    const usuario = await Usuario.findOne({
+        where: {
+            email
+        }
+    });
+
+    if (!usuario) {
+        throw new Error('El email no está registrado');
+    }
+
+    const token = generarToken();
+    usuario.token = token;
+    await usuario.save();
+
+    await emailOlvidePassword({
+        nombre: usuario.nombre,
+        email: usuario.email,
+        token: usuario.token
+    });
+
+    return usuario;
+}
+
+/* Funcion logica para reestablecer contraseña */
+export const comprobarToken = async (token) => {
+    const usuario = await Usuario.findOne({
+        where: {
+            token
+        }
+    });
+
+    if (!usuario) {
+        throw new Error('El enlace no es válido o ha expirado.');
+    }
+
+    return usuario;
+}
+
+/* Funcion logica para guardar contraseña */
+export const nuevoPassword = async (token, password) => {
+    const usuario = await Usuario.findOne({
+        where: {
+            token
+        }
+    });
+
+    if (!usuario) {
+        throw new Error('El enlace no es válido o ha expirado.');
+    }
+
+    const passwordEncriptado = await encriptarPassword(password);
+    usuario.password = passwordEncriptado;
     usuario.token = null;
 
     await usuario.save();
