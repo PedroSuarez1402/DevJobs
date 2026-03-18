@@ -20,6 +20,8 @@
     <div class="flex flex-1 relative">
         {{#if usuario}}
             {{> sidebar}}
+            <!-- Overlay para móvil -->
+            <div id="sidebarOverlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
         {{/if}}
 
         <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-hidden">
@@ -52,12 +54,49 @@
         document.addEventListener('DOMContentLoaded', () => {
             const sidebar = document.getElementById('sidebar');
             const toggleBtn = document.getElementById('toggleSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
 
             if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', () => {
-                    // Toggle hidden class for desktop, and possibly a translation for mobile if we add it
-                    sidebar.classList.toggle('hidden');
-                    sidebar.classList.toggle('md:block');
+                const toggleSidebar = () => {
+                    const isMobile = window.innerWidth < 768;
+                    const isCollapsed = isMobile 
+                        ? sidebar.classList.contains('-translate-x-full') 
+                        : sidebar.classList.contains('md:-translate-x-full');
+                    
+                    if (isCollapsed) {
+                        // Abrir
+                        sidebar.classList.remove('-translate-x-full', 'md:-translate-x-full');
+                        sidebar.classList.add('translate-x-0', 'md:translate-x-0');
+                        if (isMobile && overlay) overlay.classList.remove('hidden');
+                    } else {
+                        // Cerrar
+                        sidebar.classList.remove('translate-x-0', 'md:translate-x-0');
+                        sidebar.classList.add('-translate-x-full', 'md:-translate-x-full');
+                        if (overlay) overlay.classList.add('hidden');
+                    }
+                };
+
+                toggleBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    toggleSidebar();
+                });
+
+                if (overlay) {
+                    overlay.addEventListener('click', toggleSidebar);
+                }
+
+                // Limpiar estados al redimensionar
+                window.addEventListener('resize', () => {
+                    if (window.innerWidth >= 768) {
+                        if (overlay) overlay.classList.add('hidden');
+                        sidebar.classList.remove('-translate-x-full', 'md:-translate-x-full');
+                        sidebar.classList.add('md:translate-x-0');
+                    } else {
+                        // En móvil oculto por defecto
+                        if (!sidebar.classList.contains('translate-x-0')) {
+                            sidebar.classList.add('-translate-x-full');
+                        }
+                    }
                 });
             }
 
