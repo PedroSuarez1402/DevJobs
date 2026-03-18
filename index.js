@@ -32,6 +32,8 @@ const port = process.env.PORT || 5001;
 // Static files
 app.use(express.static('public'));
 app.use('/vendor/flatpickr', express.static('node_modules/flatpickr/dist'));
+app.use('/vendor/jquery', express.static('node_modules/jquery/dist'));
+app.use('/vendor/select2', express.static('node_modules/select2/dist'));
 
 app.use('/', router);
 // Conexion a la base de datos
