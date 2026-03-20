@@ -1,5 +1,5 @@
 import { getVacantes } from '../services/homeService.js';
-import { guardarVacante } from '../services/vacanteService.js';
+import { guardarVacante, showVacante } from '../services/vacanteService.js';
 
 export const Vacantes = async (req, res) => {
     const vacantes = await getVacantes();
@@ -31,5 +31,26 @@ export const crearVacante = async (req, res) => {
     } catch (error) {
         req.flash('error', 'Error al crear la vacante');
         res.redirect('/vacantes/nueva');
+    }
+}
+
+export const verVacante = async (req, res) => {
+    try {
+    const id = req.params.id;
+    const vacante = await showVacante(id);
+    if (!vacante) {
+        req.flash('error', 'Vacante no encontrada');
+        res.redirect('/vacantes');
+    }
+    res.render('vacantes/show', {
+        barra: true,
+        nombre: req.session.usuario.nombre,
+        email: req.session.usuario.email,
+        foto_perfil: req.session.usuario.foto_perfil,
+        vacante: vacante
+    });
+    } catch (error) {
+        req.flash('error', 'Error al ver la vacante');
+        res.redirect('/vacantes');
     }
 }

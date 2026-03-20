@@ -1,6 +1,6 @@
 import express from 'express';
 import { protegerRuta } from '../middlewares/authMiddleware.js';
-import { formularioNuevaVacante, Vacantes, crearVacante } from '../controllers/vacantesController.js';
+import { formularioNuevaVacante, Vacantes, crearVacante, verVacante } from '../controllers/vacantesController.js';
 
 const router = express.Router();
 
@@ -8,5 +8,6 @@ const router = express.Router();
 router.get('/', protegerRuta, Vacantes)
 router.get('/nueva', protegerRuta, formularioNuevaVacante)
 router.post('/nueva', protegerRuta, crearVacante);
+router.get('/:id', protegerRuta, verVacante)
 
 export default router;
