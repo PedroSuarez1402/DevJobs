@@ -8,7 +8,7 @@ import Miembros_Canal from './Miembros_Canal.js';
 import Seguidores from './Seguidores.js';
 
 // Relaciones 1:N
-// Un usuario puede tener muchas vacantes
+// ... (existing relations)
 Usuario.hasMany(CVs, { foreignKey: 'usuario_id' });
 CVs.belongsTo(Usuario, { foreignKey: 'usuario_id' }); // Un CV pertenece a un usuario
 
@@ -35,6 +35,7 @@ Usuario.belongsToMany(Canales, { through: Miembros_Canal, foreignKey: 'usuario_i
 Canales.belongsToMany(Usuario, { through: Miembros_Canal, foreignKey: 'canal_id' });
 
 // Relación de Seguidores (Autorreferencial)
+// ... (rest of the file)
 Usuario.belongsToMany(Usuario, { 
     as: 'seguidores_list', 
     through: Seguidores, 

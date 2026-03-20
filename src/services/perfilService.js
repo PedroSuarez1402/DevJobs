@@ -5,7 +5,9 @@ import { Usuario, CVs } from '../models/index.js';
  */
 export const obtenerPerfilCompleto = async (usuarioId) => {
     const usuario = await Usuario.findByPk(usuarioId, {
-        include: [{ model: CVs }]
+        include: [
+            { model: CVs }
+        ]
     });
 
     if (!usuario) {
@@ -33,7 +35,7 @@ export const actualizarPerfilYCV = async (usuarioId, datos, archivos) => {
         nombre, titular, resumen, github, telefono, 
         skills_tecnicas, skills_blandas, 
         exp_cargo, exp_empresa, exp_inicio, exp_fin, exp_logros, 
-        edu_titulo, edu_inst, edu_anio 
+        edu_titulo, edu_inst, edu_anio
     } = datos;
 
     // 1. Actualizar datos básicos del Usuario

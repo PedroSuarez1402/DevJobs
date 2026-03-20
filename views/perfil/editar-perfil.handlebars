@@ -9,7 +9,7 @@
             
             <!-- Sección: Datos Personales -->
             <div class="space-y-6">
-                <h2 class="text-xl font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-sm">1. Información Básica</h2>
+                <h2 class=" font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-md">1. Información Básica</h2>
                 
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="space-y-2">
@@ -58,7 +58,7 @@
 
             <!-- Sección: Habilidades -->
             <div class="space-y-6">
-                <h2 class="text-xl font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-sm">2. Habilidades (Separar por comas)</h2>
+                <h2 class=" font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-md">2. Habilidades (Separar por comas)</h2>
                 
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="space-y-2">
@@ -78,7 +78,7 @@
             <!-- Sección: Experiencia -->
             <div class="space-y-6">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                    <h2 class="text-xl font-bold text-emerald-400 uppercase tracking-wider text-sm">3. Experiencia Laboral</h2>
+                    <h2 class="font-bold text-emerald-400 uppercase tracking-wider text-md">3. Experiencia Laboral</h2>
                     <button type="button" onclick="agregarExperiencia()" class="text-emerald-500 hover:text-emerald-400 text-xs font-black uppercase flex items-center gap-1">
                         <i class="fa-solid fa-plus"></i>Añadir
                     </button>
@@ -117,7 +117,7 @@
             <!-- Sección: Educación -->
             <div class="space-y-6">
                 <div class="flex justify-between items-center border-b border-gray-800 pb-3">
-                    <h2 class="text-xl font-bold text-emerald-400 uppercase tracking-wider text-sm">4. Educación</h2>
+                    <h2 class="font-bold text-emerald-400 uppercase tracking-wider text-md">4. Educación</h2>
                     <button type="button" onclick="agregarEducacion()" class="text-emerald-500 hover:text-emerald-400 text-xs font-black uppercase flex items-center gap-1">
                         <i class="fa-solid fa-plus"></i>Añadir
                     </button>
@@ -174,8 +174,6 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', inicializarPickers);
-
     function agregarExperiencia() {
         const div = document.createElement('div');
         div.className = 'bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group animate-in fade-in slide-in-from-top-4 duration-300';
@@ -213,4 +211,6 @@
     function eliminarFila(btn) {
         btn.closest('div').remove();
     }
+
+    document.addEventListener('DOMContentLoaded', inicializarPickers);
 </script>
