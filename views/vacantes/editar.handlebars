@@ -1,0 +1,106 @@
+<div class="max-w-4xl mx-auto mt-10 px-4">
+    <div class="bg-white/5 p-10 rounded-2xl shadow-xl border border-gray-800">
+        
+        <div class="mb-8 border-b border-gray-800 pb-6 text-center sm:text-left">
+            <h1 class="text-2xl font-black text-white mb-2">{{nombrePagina}}</h1>
+            <p class="text-md text-gray-400">{{tagline}}</p>
+        </div>
+
+        {{#if mensajes.error}}
+            <div class="bg-red-500/20 border border-red-500 text-red-100 p-4 rounded-lg mb-6 text-center text-xl">
+                {{mensajes.error}}
+            </div>
+        {{/if}}
+
+        <form action="/vacantes/editar/{{vacante.id}}" method="POST" class="space-y-6">
+            
+            {{!-- Título de la Vacante --}}
+            <div>
+                <label for="titulo" class="block text-md text-gray-400 mb-2 font-bold uppercase tracking-tight">Título del Puesto</label>
+                <input type="text" name="titulo" id="titulo" value="{{vacante.titulo}}" placeholder="Ej: Desarrollador React Senior" required
+                    class="w-full bg-[#100E17] border border-gray-700 rounded-xl px-6 py-4 text-white text-sm focus:outline-none focus:border-[#00C897] transition-all">
+            </div>
+
+            {{!-- Contenedor de 2 columnas para Salario y Contrato --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="salario" class="block text-md text-gray-400 mb-2 font-bold uppercase tracking-tight">Salario (Mensual)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-bold">$</span>
+                        <input type="number" name="salario" id="salario" value="{{vacante.salario}}" placeholder="5000" step="0.01" required
+                            class="w-full bg-[#100E17] border border-gray-700 rounded-xl pl-10 pr-6 py-4 text-white text-sm focus:outline-none focus:border-[#00C897] transition-all">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="tipo_contrato" class="block text-md text-gray-400 mb-2 font-bold uppercase tracking-tight">Tipo de Contrato</label>
+                    <select name="tipo_contrato" id="tipo_contrato" required class="select2">
+                        <option value="" disabled>-- Selecciona una opción --</option>
+                        <option value="Indefinido" {{#eq vacante.tipo_contrato 'Indefinido'}}selected{{/eq}}>Término Indefinido</option>
+                        <option value="Fijo" {{#eq vacante.tipo_contrato 'Fijo'}}selected{{/eq}}>Término Fijo</option>
+                        <option value="Proyecto" {{#eq vacante.tipo_contrato 'Proyecto'}}selected{{/eq}}>Por Proyecto / Freelance</option>
+                    </select>
+                </div>
+            </div>
+
+            {{!-- Ubicación --}}
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <label for="ubicacion" class="block text-md text-gray-400 font-bold uppercase tracking-tight">Ubicación</label>
+                    <label class="inline-flex items-center cursor-pointer group">
+                        <input type="checkbox" name="remoto" id="remoto" class="sr-only peer" {{#eq vacante.ubicacion 'Remoto'}}checked{{/eq}}>
+                        <div class="relative w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                        <span class="ms-3 text-sm font-medium text-gray-400 group-hover:text-emerald-400 transition-colors">Trabajo Remoto</span>
+                    </label>
+                </div>
+                <div id="ubicacion-container" class="{{#eq vacante.ubicacion 'Remoto'}}hidden{{/eq}}">
+                    <select name="ubicacion" id="ubicacion" class="select2-location">
+                        {{#if vacante.ubicacion}}
+                            <option value="{{vacante.ubicacion}}" selected>{{vacante.ubicacion}}</option>
+                        {{else}}
+                            <option value="" selected disabled>Buscar ciudad o país...</option>
+                        {{/if}}
+                    </select>
+                </div>
+            </div>
+
+            {{!-- Descripción --}}
+            <div>
+                <label for="descripcion" class="block text-md text-gray-400 mb-2 font-bold uppercase tracking-tight">Descripción del Puesto</label>
+                <textarea name="descripcion" id="descripcion" rows="8" placeholder="Requisitos, responsabilidades, beneficios..." required
+                    class="w-full bg-[#100E17] border border-gray-700 rounded-xl px-6 py-4 text-white text-sm focus:outline-none focus:border-[#00C897] transition-all resize-none">{{vacante.descripcion}}</textarea>
+            </div>
+
+            {{!-- Botones --}}
+            <div class="pt-8 border-t border-gray-800 flex flex-col sm:flex-row gap-4">
+                <a href="/vacantes/mis-vacantes" class="sm:flex-1 text-center bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-4 rounded-xl text-sm transition-all">
+                    Cancelar
+                </a>
+                <button type="submit" class="sm:flex-1 bg-[#00C897] hover:bg-[#0a9b77] text-white font-black uppercase py-4 rounded-xl text-sm cursor-pointer transition-all flex justify-center items-center gap-2 shadow-lg shadow-emerald-500/10 active:scale-95">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const checkboxRemoto = document.querySelector('#remoto');
+        const ubicacionContainer = document.querySelector('#ubicacion-container');
+        const selectUbicacion = document.querySelector('#ubicacion');
+
+        if (checkboxRemoto) {
+            checkboxRemoto.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    ubicacionContainer.classList.add('hidden');
+                    selectUbicacion.removeAttribute('required');
+                } else {
+                    ubicacionContainer.classList.remove('hidden');
+                    selectUbicacion.setAttribute('required', 'required');
+                }
+            });
+        }
+    });
+</script>

@@ -1,5 +1,5 @@
 import { getVacantes } from '../services/homeService.js';
-import { getMisVacantes, guardarVacante, showVacante } from '../services/vacanteService.js';
+import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante } from '../services/vacanteService.js';
 
 export const Vacantes = async (req, res) => {
     const usuarioId = req.session?.usuario?.id || null;
@@ -70,5 +70,64 @@ export const misVacantes = async (req, res) => {
     } catch (error) {
         req.flash('error', 'Error al cargar tu panel de administracion');
         res.redirect('/vacantes');
+    }
+}
+// Funcion para mostrar la vista de editar vacante
+export const formularioEditarVacante = async (req, res) => {
+    try {
+        const vacante = await showVacante(req.params.id);
+        if (!vacante || vacante.empleador_id !== req.session.usuario.id){
+            req.flash('error', 'No tienes permisos para editar esta vacante');
+            return res.redirect('/vacantes/mis-vacantes');
+        }
+        res.render('vacantes/editar', {
+            nombrePagina: `Editar: ${vacante.titulo}`,
+            tagline: 'Edita los detalles de tu oferta de empleo',
+            nombre: req.session.usuario.nombre,
+            vacante
+        });
+    } catch (error) {
+        req.flash('error', 'Hubo un error al cargar la vacante');
+        res.redirect('/vacantes/mis-vacantes');
+    }
+}
+// Guardar los cambios de la vacante
+export const editarVacante = async (req, res) => {
+    try {
+        const vacante = await showVacante(req.params.id);
+
+        // REGLA DE SEGURIDAD NUEVAMENTE (Nunca confíes en el frontend)
+        if (!vacante || vacante.empleador_id !== req.session.usuario.id) {
+            req.flash('error', 'Operación no permitida');
+            return res.redirect('/vacantes/mis-vacantes');
+        }
+
+        await actualizarVacante(req.params.id, req.body);
+
+        req.flash('exito', 'Vacante actualizada correctamente');
+        res.redirect('/vacantes/mis-vacantes');
+    } catch (error) {
+        req.flash('error', 'Error al guardar los cambios');
+        res.redirect(`/vacantes/editar/${req.params.id}`);
+    }
+}
+// Eliminar la vacante
+export const eliminarVacante = async (req, res) => {
+    try {
+        const vacante = await showVacante(req.params.id);
+
+        // REGLA DE SEGURIDAD
+        if (!vacante || vacante.empleador_id !== req.session.usuario.id) {
+            req.flash('error', 'Operación no permitida');
+            return res.redirect('/vacantes/mis-vacantes');
+        }
+
+        await eliminarVacanteDb(req.params.id);
+
+        req.flash('exito', 'Vacante eliminada permanentemente');
+        res.redirect('/vacantes/mis-vacantes');
+    } catch (error) {
+        req.flash('error', 'Error al eliminar la vacante');
+        res.redirect('/vacantes/mis-vacantes');
     }
 }

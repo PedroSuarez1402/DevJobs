@@ -26,7 +26,7 @@
                         {{titulo}}
                     </h2>
 
-                    <div class="space-y-3 mb-6 flex-grow">
+                    <div class="space-y-3 mb-6 grow">
                         <div class="flex items-center gap-2 text-sm text-gray-400">
                             <i class="fa-solid fa-location-dot text-emerald-500/70"></i>
                             <span class="truncate">{{ubicacion}}</span>
@@ -63,3 +63,30 @@
         </div>
     {{/if}}
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function eliminarVacante(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Una vez eliminada, no podrás recuperar esta vacante ni sus postulaciones.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#10b981', // emerald-500
+            cancelButtonColor: '#ef4444', // red-500
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: '#111827',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Crear un formulario temporal para enviar el POST
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/vacantes/eliminar/${id}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        })
+    }
+</script>

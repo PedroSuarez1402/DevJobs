@@ -23,7 +23,12 @@ app.use((req, res, next) => {
     next();
 });
 // Habilidar handlebars como motor de plantillas definiendo un layout
-app.engine('handlebars', engine({ defaultLayout: 'layout' }));
+app.engine('handlebars', engine({ 
+    defaultLayout: 'layout',
+    helpers: {
+        eq: (a, b) => a === b
+    }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 

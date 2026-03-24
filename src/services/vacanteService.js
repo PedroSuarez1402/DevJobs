@@ -66,3 +66,34 @@ export const getMisVacantes = async (empleador_id) => {
         throw error;
     }
 }
+// Funcion para actualizar vacante
+export const actualizarVacante = async (id, datosActualizados) => {
+    try {
+        const vacante = await Vacantes.findByPk(id);
+        const ubicacionFinal = datosActualizados.remoto === 'on' ? 'Remoto': datosActualizados.ubicacion;
+
+        vacante.titulo = datosActualizados.titulo;
+        vacante.descripcion = datosActualizados.descripcion;
+        vacante.salario = datosActualizados.salario;
+        vacante.tipo_contrato = datosActualizados.tipo_contrato;
+        vacante.ubicacion = ubicacionFinal;
+
+        await vacante.save();
+        return vacante;
+    } catch (error) {
+        console.error("Error al actualizar la vacante:", error);
+        throw error;
+    }
+}
+// Funcion para eliminar una vacante
+export const eliminarVacanteDb = async (id) => {
+    try {
+        await Vacantes.destroy({
+            where: { id: id }
+        })
+        return true;
+    } catch (error) {
+        console.error("Error al eliminar la vacante:", error);
+        throw error;
+    }
+}
