@@ -1,8 +1,9 @@
 import { getVacantes } from '../services/homeService.js';
-import { guardarVacante, showVacante } from '../services/vacanteService.js';
+import { getMisVacantes, guardarVacante, showVacante } from '../services/vacanteService.js';
 
 export const Vacantes = async (req, res) => {
-    const vacantes = await getVacantes();
+    const usuarioId = req.session?.usuario?.id || null;
+    const vacantes = await getVacantes(usuarioId);
 
     res.render('vacantes/vacantes', {
         barra: true,
@@ -51,6 +52,23 @@ export const verVacante = async (req, res) => {
     });
     } catch (error) {
         req.flash('error', 'Error al ver la vacante');
+        res.redirect('/vacantes');
+    }
+}
+
+export const misVacantes = async (req, res) => {
+    try {
+        const empleador_id = req.session.usuario.id;
+        const vacantes = await getMisVacantes(empleador_id);
+
+        res.render('vacantes/mis-vacantes', {
+            nombrePagina: 'Panel de Administracion',
+            tagline: 'Gestiona tus ofertas de empleo y revisa los candidatos',
+            nombre: req.session.usuario.nombre,
+            vacantes: vacantes
+        });
+    } catch (error) {
+        req.flash('error', 'Error al cargar tu panel de administracion');
         res.redirect('/vacantes');
     }
 }

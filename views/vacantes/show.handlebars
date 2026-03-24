@@ -35,18 +35,14 @@
                 </div>
 
                 {{!-- Resumen Rápido --}}
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-4 bg-gray-950/50 rounded-xl border border-gray-800 mb-8">
-                    <div class="text-center">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-950/50 rounded-xl border border-gray-800 mb-8">
+                    <div class="text-center border-r border-gray-800">
                         <p class="text-[10px] uppercase font-black text-gray-500 mb-1">Salario</p>
                         <p class="text-lg font-bold text-white">${{vacante.salario}}</p>
                     </div>
-                    <div class="text-center border-x border-gray-800">
+                    <div class="text-center">
                         <p class="text-[10px] uppercase font-black text-gray-500 mb-1">Contrato</p>
                         <p class="text-lg font-bold text-white">{{vacante.tipo_contrato}}</p>
-                    </div>
-                    <div class="text-center col-span-2 md:col-span-1 border-t md:border-t-0 pt-4 md:pt-0 border-gray-800">
-                        <p class="text-[10px] uppercase font-black text-gray-500 mb-1">Ubicación</p>
-                        <p class="text-lg font-bold text-white">{{vacante.ubicacion}}</p>
                     </div>
                 </div>
 

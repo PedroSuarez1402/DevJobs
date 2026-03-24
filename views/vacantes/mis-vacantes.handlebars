@@ -1,0 +1,65 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-black text-white mb-2">{{nombrePagina}}</h1>
+        <p class="text-gray-400 font-medium">{{tagline}}</p>
+    </div>
+
+    {{#if vacantes.length}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {{#each vacantes}}
+                <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-sm hover:border-emerald-500/50 transition-all group flex flex-col h-full">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 text-[10px] font-black uppercase rounded-full border border-emerald-500/20">
+                            {{tipo_contrato}}
+                        </span>
+                        <div class="flex gap-2">
+                            <a href="/vacantes/editar/{{id}}" class="text-gray-500 hover:text-white transition-colors">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <button onclick="eliminarVacante('{{id}}')" class="text-gray-500 hover:text-red-500 transition-colors">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <h2 class="text-xl font-bold text-white mb-2 group-hover:text-emerald-400 transition-colors line-clamp-2">
+                        {{titulo}}
+                    </h2>
+
+                    <div class="space-y-3 mb-6 flex-grow">
+                        <div class="flex items-center gap-2 text-sm text-gray-400">
+                            <i class="fa-solid fa-location-dot text-emerald-500/70"></i>
+                            <span class="truncate">{{ubicacion}}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-gray-400">
+                            <i class="fa-solid fa-users text-emerald-500/70"></i>
+                            <span>{{postulaciones.length}} candidatos</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-gray-800 flex justify-between items-center">
+                        <a href="/vacantes/{{id}}" class="text-xs font-black uppercase text-emerald-500 hover:text-emerald-400 transition-all flex items-center gap-1.5">
+                            Ver Detalles
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="/vacantes/candidatos/{{id}}" class="text-[10px] font-black uppercase bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition-all">
+                            Candidatos
+                        </a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        <div class="bg-gray-900 border border-gray-800 rounded-3xl p-12 text-center max-w-2xl mx-auto">
+            <div class="w-20 h-20 bg-gray-950 rounded-full flex items-center justify-center mx-auto mb-6 border border-gray-800">
+                <i class="fa-solid fa-briefcase text-3xl text-gray-700"></i>
+            </div>
+            <h2 class="text-2xl font-black text-white mb-3">No has publicado vacantes aún</h2>
+            <p class="text-gray-400 mb-8 leading-relaxed">Comienza a publicar tus ofertas de empleo para encontrar a los mejores candidatos.</p>
+            <a href="/vacantes/nueva" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-3 px-8 rounded-xl text-sm transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
+                <i class="fa-solid fa-plus"></i>
+                Publicar mi primera vacante
+            </a>
+        </div>
+    {{/if}}
+</div>

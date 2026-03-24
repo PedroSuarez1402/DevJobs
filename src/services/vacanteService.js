@@ -1,4 +1,4 @@
-import { Vacantes, Usuario } from "../models/index.js"
+import { Vacantes, Usuario, Postulaciones } from "../models/index.js"
 /* Crear una nueva vacante */
 export const guardarVacante = async (datosVacante, empleador_id) => {
     try {
@@ -38,6 +38,31 @@ export const showVacante = async (id) => {
         return vacante.toJSON();
     } catch (error) {
         console.error("Error al obtener la vacante:", error);
+        throw error;
+    }
+}
+
+// Funcion para obtener las vacantes que creo el usuario loggeado
+export const getMisVacantes = async (empleador_id) => {
+    try {
+        const misVacantes = await Vacantes.findAll({
+            where: { empleador_id: empleador_id },
+            include: [
+                {
+                    model: Postulaciones, // Traemos a los candidatos que se postularon
+                    include: [
+                        {
+                            model: Usuario, // Traemos los datos del candidato
+                            attributes: ['id', 'nombre', 'foto_perfil', 'email']
+                        }
+                    ]
+                }
+            ],
+            order: [['fecha_publicacion', 'DESC']]
+        })
+    return misVacantes.map(vacante => vacante.toJSON());
+    } catch (error) {
+        console.error("Error al obtener mis vacantes:", error);
         throw error;
     }
 }
