@@ -35,9 +35,11 @@
         </div>
 
         <div class="flex flex-col gap-3 w-full md:w-auto">
+            {{#if esPerfilPropio}}
             <a href="/perfil/editar" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center shadow-lg shadow-emerald-500/20">
                 <i class="fa-solid fa-pen-to-square mr-2"></i>Editar Perfil
             </a>
+            {{/if}}
             {{#if cv.url_archivo}}
             <a href="/uploads/cvs/{{cv.url_archivo}}" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center border border-gray-700">
                 <i class="fa-solid fa-file-pdf mr-2"></i>Ver CV Adjunto
@@ -55,7 +57,13 @@
                 <h3 class="text-xl font-bold text-white flex items-center gap-3">
                     <i class="fa-solid fa-user-tie text-emerald-500"></i>Acerca de mí
                 </h3>
-                <p class="text-gray-400 leading-relaxed">{{cv.resumen}}</p>
+                {{#if cv.resumen}}
+                    <p class="text-gray-400 leading-relaxed text-sm">{{cv.resumen}}</p>
+                {{else}}
+                    <p class="text-gray-500 italic text-sm">
+                        {{#if esPerfilPropio}}No has agregado un resumen profesional todavía.{{else}}Este usuario no ha agregado un resumen profesional.{{/if}}
+                    </p>
+                {{/if}}
             </section>
 
             <!-- Experiencia -->

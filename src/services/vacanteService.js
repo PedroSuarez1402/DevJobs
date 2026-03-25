@@ -28,7 +28,7 @@ export const showVacante = async (id) => {
                 {
                     model: Usuario,
                     as: 'creador',
-                    attributes: ['nombre', 'email', 'foto_perfil']
+                    attributes: ['id', 'nombre', 'email', 'foto_perfil']
                 }
             ]
         });

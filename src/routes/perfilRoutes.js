@@ -10,5 +10,6 @@ const router = express.Router();
 router.get('/', protegerRuta, mostrarPerfil);
 router.get('/editar', protegerRuta, formularioEditarPerfil);
 router.post('/editar', protegerRuta, subirArchivosPerfil, editarPerfil);
+router.get('/:id', protegerRuta, mostrarPerfil);
 
 export default router;
