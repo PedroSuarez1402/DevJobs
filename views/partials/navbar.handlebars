@@ -4,9 +4,7 @@
         <div class="flex items-center gap-4">
             {{#if usuario}}
             <button id="toggleSidebar" class="p-1.5 hover:bg-gray-800 rounded-md text-gray-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <i class="fa-solid fa-bars h-5 w-5 flex items-center justify-center"></i>
             </button>
             {{/if}}
             <a href="/" class="text-lg font-black text-emerald-500 tracking-tight">DevJobs</a>
@@ -18,9 +16,7 @@
             <form action="#" class="relative">
                 <input type="text" placeholder="Buscar empleos..." 
                     class="w-full h-8 bg-gray-800 border-none rounded-md px-8 text-xs text-gray-200 placeholder-gray-500 focus:ring-1 focus:ring-emerald-500/50 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-500 text-[10px]"></i>
             </form>
         </div>
         {{/if}}
@@ -30,12 +26,21 @@
             {{#if usuario}}
             <div class="flex items-center gap-2">
                 <span class="text-xs text-gray-400 font-medium hidden sm:inline-block">Hola, {{usuario.nombre}}</span>
-                <a href="/auth/logout" class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Cerrar Sesión</a>
+                <a href="/auth/logout" class="text-xs font-bold text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    Cerrar Sesión
+                </a>
             </div>
             {{else}}
                 {{#unless ocultarBotonesAuth}}
-                <a href="/auth/login" class="text-xs font-bold text-gray-400 hover:text-white transition-colors">Iniciar Sesión</a>
-                <a href="/auth/register" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs px-3 py-1.5 rounded-md transition-all shadow-lg shadow-emerald-500/10">Registrarse</a>
+                <a href="/auth/login" class="text-xs font-bold text-gray-400 hover:text-white transition-colors flex items-center gap-1.5">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    Iniciar Sesión
+                </a>
+                <a href="/auth/register" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs px-3 py-1.5 rounded-md transition-all shadow-lg shadow-emerald-500/10 flex items-center gap-1.5">
+                    <i class="fa-solid fa-user-plus"></i>
+                    Registrarse
+                </a>
                 {{/unless}}
             {{/if}}
         </div>

@@ -1,0 +1,133 @@
+<div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header del Perfil -->
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
+        <div class="relative group">
+            {{#if usuario.foto_perfil}}
+                <img src="/uploads/perfiles/{{usuario.foto_perfil}}" alt="{{usuario.nombre}}" class="w-32 h-32 rounded-full object-cover border-4 border-emerald-500/20 group-hover:border-emerald-500 transition-all">
+            {{else}}
+                <div class="w-32 h-32 rounded-full bg-emerald-500/10 flex items-center justify-center border-4 border-emerald-500/20 group-hover:border-emerald-500 transition-all">
+                    <i class="fa-solid fa-user text-5xl text-emerald-500"></i>
+                </div>
+            {{/if}}
+        </div>
+        
+        <div class="flex-1 text-center md:text-left space-y-2">
+            <h1 class="text-3xl font-black text-white">{{usuario.nombre}}</h1>
+            <p class="text-emerald-400 text-lg font-bold">{{cv.titular}}</p>
+            <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400 mt-4">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-envelope"></i>
+                    <span>{{usuario.email}}</span>
+                </div>
+                {{#if cv.telefono}}
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>{{cv.telefono}}</span>
+                </div>
+                {{/if}}
+                {{#if cv.github}}
+                <a href="{{cv.github}}" target="_blank" class="flex items-center gap-2 hover:text-white transition-colors">
+                    <i class="fa-brands fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+                {{/if}}
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-3 w-full md:w-auto">
+            <a href="/perfil/editar" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center shadow-lg shadow-emerald-500/20">
+                <i class="fa-solid fa-pen-to-square mr-2"></i>Editar Perfil
+            </a>
+            {{#if cv.url_archivo}}
+            <a href="/uploads/cvs/{{cv.url_archivo}}" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center border border-gray-700">
+                <i class="fa-solid fa-file-pdf mr-2"></i>Ver CV Adjunto
+            </a>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- Contenido del CV -->
+    <div class="grid md:grid-cols-3 gap-8">
+        <!-- Columna Izquierda: Resumen y Skills -->
+        <div class="md:col-span-2 space-y-8">
+            <!-- Acerca de -->
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-4">
+                <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-user-tie text-emerald-500"></i>Acerca de mí
+                </h3>
+                <p class="text-gray-400 leading-relaxed">{{cv.resumen}}</p>
+            </section>
+
+            <!-- Experiencia -->
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-briefcase text-emerald-500"></i>Experiencia Laboral
+                </h3>
+                {{#if cv.experiencia.length}}
+                    <div class="space-y-8 relative before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gray-800">
+                        {{#each cv.experiencia}}
+                        <div class="relative pl-10">
+                            <div class="absolute left-0 top-1.5 w-5 h-5 rounded-full bg-gray-950 border-4 border-emerald-500"></div>
+                            <div class="space-y-1">
+                                <h4 class="text-lg font-bold text-white">{{cargo}}</h4>
+                                <p class="text-emerald-400 font-medium">{{empresa}}</p>
+                                <p class="text-xs text-gray-500 uppercase font-bold">{{inicio}} — {{fin}}</p>
+                                <div class="text-sm text-gray-400 mt-2 leading-relaxed whitespace-pre-line">{{logros}}</div>
+                            </div>
+                        </div>
+                        {{/each}}
+                    </div>
+                {{else}}
+                    <p class="text-gray-500 italic">No has agregado experiencia laboral aún.</p>
+                {{/if}}
+            </section>
+
+            <!-- Educación -->
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-6">
+                <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-graduation-cap text-emerald-500"></i>Educación
+                </h3>
+                {{#if cv.educacion.length}}
+                    <div class="grid gap-6">
+                        {{#each cv.educacion}}
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl flex justify-between items-start">
+                            <div>
+                                <h4 class="text-base font-bold text-white">{{titulo}}</h4>
+                                <p class="text-gray-400 text-sm">{{institucion}}</p>
+                            </div>
+                            <span class="px-2 py-1 bg-gray-800 text-emerald-400 text-[10px] font-black rounded uppercase">{{anio}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                {{else}}
+                    <p class="text-gray-500 italic">No has agregado información académica aún.</p>
+                {{/if}}
+            </section>
+        </div>
+
+        <!-- Columna Derecha: Skills -->
+        <div class="space-y-8">
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-bolt text-emerald-500"></i>Habilidades Técnicas
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {{#each cv.skills_tecnicas}}
+                        <span class="bg-gray-800 text-gray-200 px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-700">{{this}}</span>
+                    {{/each}}
+                </div>
+            </section>
+
+            <section class="bg-gray-900 border border-gray-800 rounded-2xl p-6 space-y-6">
+                <h3 class="text-lg font-bold text-white flex items-center gap-3">
+                    <i class="fa-solid fa-heart text-emerald-500"></i>Habilidades Blandas
+                </h3>
+                <div class="flex flex-wrap gap-2">
+                    {{#each cv.skills_blandas}}
+                        <span class="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-medium border border-emerald-500/20">{{this}}</span>
+                    {{/each}}
+                </div>
+            </section>
+        </div>
+    </div>
+</div>

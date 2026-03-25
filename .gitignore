@@ -43,3 +43,6 @@ Thumbs.db
 # Temporary folders
 tmp/
 temp/
+# archivos publicos para evitar la sobre carga del servidor
+
+uploads/

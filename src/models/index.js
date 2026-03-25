@@ -8,12 +8,12 @@ import Miembros_Canal from './Miembros_Canal.js';
 import Seguidores from './Seguidores.js';
 
 // Relaciones 1:N
-// Un usuario puede tener muchas vacantes
+// ... (existing relations)
 Usuario.hasMany(CVs, { foreignKey: 'usuario_id' });
 CVs.belongsTo(Usuario, { foreignKey: 'usuario_id' }); // Un CV pertenece a un usuario
 
-Usuario.hasMany(Vacantes, { foreignKey: 'empleador_id' }); // Un usuario puede tener muchas vacantes
-Vacantes.belongsTo(Usuario, { foreignKey: 'empleador_id' }); // Una vacante pertenece a un usuario
+Usuario.hasMany(Vacantes, { foreignKey: 'empleador_id', as: 'mis_vacantes' }); // Un usuario puede tener muchas vacantes
+Vacantes.belongsTo(Usuario, { foreignKey: 'empleador_id', as: 'creador' }); // Una vacante pertenece a un usuario
 
 Usuario.hasMany(Postulaciones, { foreignKey: 'candidato_id' });
 Postulaciones.belongsTo(Usuario, { foreignKey: 'candidato_id' });
@@ -35,15 +35,16 @@ Usuario.belongsToMany(Canales, { through: Miembros_Canal, foreignKey: 'usuario_i
 Canales.belongsToMany(Usuario, { through: Miembros_Canal, foreignKey: 'canal_id' });
 
 // Relación de Seguidores (Autorreferencial)
+// ... (rest of the file)
 Usuario.belongsToMany(Usuario, { 
-    as: 'seguidores', 
+    as: 'seguidores_list', 
     through: Seguidores, 
     foreignKey: 'seguido_id', 
     otherKey: 'seguidor_id' 
 });
 
 Usuario.belongsToMany(Usuario, { 
-    as: 'siguiendo', 
+    as: 'siguiendo_list', 
     through: Seguidores, 
     foreignKey: 'seguidor_id', 
     otherKey: 'seguido_id' 

@@ -1,0 +1,112 @@
+<div class="max-w-7xl mx-auto mt-10 px-4">
+    
+    <div class="mb-6">
+        <a href="/vacantes/mis-vacantes" class="inline-flex items-center gap-2 text-gray-400 hover:text-emerald-400 transition-colors text-sm font-medium group">
+            <i class="fa-solid fa-arrow-left transition-transform group-hover:-translate-x-1"></i>
+            Volver a las vacantes
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        {{!-- PANEL IZQUIERDO: Resumen de la vacante --}}
+        <div class="lg:col-span-1 bg-white/5 border border-gray-800 rounded-2xl p-6 h-fit">
+            <h3 class="text-xl font-bold text-emerald-400 mb-4">Estado Actual</h3>
+            
+            <div class="mb-6">
+                {{#if (eq vacante.estado 'abierta')}}
+                    <span class="bg-emerald-500/20 text-emerald-400 px-4 py-2 rounded-full font-bold uppercase text-sm tracking-widest flex items-center w-fit gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Abierta
+                    </span>
+                    <p class="text-gray-400 text-sm mt-3">Recibiendo postulaciones</p>
+                    
+                    {{!-- BOTÓN PARA CERRAR --}}
+                    <form action="/vacantes/mis-vacantes/cerrar/{{vacante.id}}" method="POST" class="mt-6" onsubmit="return confirm('¿Seguro que deseas cerrar esta vacante? Ya no recibirás más postulaciones.');">
+                        <button type="submit" class="w-full bg-orange-500/10 border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-3 rounded-xl transition-colors">
+                            Cerrar Vacante
+                        </button>
+                    </form>
+                {{else}}
+                    <span class="bg-red-500/20 text-red-400 px-4 py-2 rounded-full font-bold uppercase text-sm tracking-widest">
+                        Cerrada
+                    </span>
+                    <p class="text-gray-400 text-sm mt-3">Esta vacante ya no acepta candidatos</p>
+                {{/if}}
+            </div>
+
+            <hr class="border-gray-800 my-6">
+            
+            <div class="text-gray-400 text-sm space-y-3">
+                <p><strong>Ubicación:</strong> {{vacante.ubicacion}}</p>
+                <p><strong>Contrato:</strong> {{vacante.tipo_contrato}}</p>
+                <p><strong>Salario:</strong> ${{vacante.salario}}</p>
+            </div>
+        </div>
+
+        {{!-- PANEL DERECHO: Tabla de Candidatos --}}
+        <div class="lg:col-span-2">
+            <div class="bg-white/5 border border-gray-800 rounded-2xl overflow-hidden">
+                <div class="p-6 border-b border-gray-800 bg-[#100E17]">
+                    <h2 class="text-2xl font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-users text-emerald-400"></i> Candidatos Postulados ({{candidatos.length}})
+                    </h2>
+                </div>
+
+                {{#if candidatos.length}}
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-gray-400">
+                            <thead class="text-xs text-gray-500 uppercase bg-black/20 border-b border-gray-800">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4">Candidato</th>
+                                    <th scope="col" class="px-6 py-4">Email</th>
+                                    <th scope="col" class="px-6 py-4">Hoja de Vida</th>
+                                    <th scope="col" class="px-6 py-4">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-800">
+                                {{#each candidatos}}
+                                    <tr class="hover:bg-white/5 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                                            {{#if usuario.foto_perfil}}
+                                                <img src="/uploads/perfiles/{{usuario.foto_perfil}}" class="w-10 h-10 rounded-full object-cover border border-gray-700">
+                                            {{else}}
+                                                <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 font-bold">
+                                                    {{!-- Obtener la primera letra del nombre --}}
+                                                    <i class="fa-solid fa-user"></i>
+                                                </div>
+                                            {{/if}}
+                                            {{usuario.nombre}}
+                                        </td>
+                                        <td class="px-6 py-4">{{usuario.email}}</td>
+                                        
+                                        <td class="px-6 py-4">
+                                            {{!-- Verificamos si tiene un CV subido --}}
+                                            {{#if usuario.cvs.length}}
+                                                <a href="/uploads/cvs/{{usuario.cvs.[0].url_archivo}}" target="_blank" class="text-emerald-400 hover:text-emerald-300 hover:underline flex items-center gap-1">
+                                                    <i class="fa-solid fa-file-pdf"></i> Ver Documento
+                                                </a>
+                                            {{else}}
+                                                <span class="text-gray-600 text-xs">Sin CV</span>
+                                            {{/if}}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <a href="mailto:{{usuario.email}}" class="bg-gray-800 hover:bg-emerald-500 hover:text-gray-950 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors">
+                                                Contactar
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div>
+                {{else}}
+                    <div class="p-10 text-center">
+                        <i class="fa-regular fa-face-frown-open text-5xl text-gray-600 mb-4 block"></i>
+                        <p class="text-gray-400">Aún no hay candidatos postulados a esta vacante.</p>
+                    </div>
+                {{/if}}
+            </div>
+        </div>
+        
+    </div>
+</div>

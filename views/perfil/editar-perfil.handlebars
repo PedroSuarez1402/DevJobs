@@ -1,0 +1,216 @@
+<div class="max-w-4xl mx-auto">
+    <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 shadow-xl">
+        <h1 class="text-3xl font-black text-white mb-8 flex items-center gap-4">
+            <i class="fa-solid fa-pen-to-square text-emerald-500"></i>
+            Editar Perfil Profesional
+        </h1>
+
+        <form action="/perfil/editar" method="POST" enctype="multipart/form-data" class="space-y-12">
+            
+            <!-- Sección: Datos Personales -->
+            <div class="space-y-6">
+                <h2 class=" font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-md">1. Información Básica</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label for="nombre" class="block text-xs font-bold text-gray-500 uppercase">Nombre Completo</label>
+                        <input type="text" name="nombre" id="nombre" value="{{usuario.nombre}}" required
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="foto_perfil" class="block text-xs font-bold text-gray-500 uppercase">Foto de Perfil</label>
+                        <input type="file" name="foto_perfil" id="foto_perfil" accept="image/*"
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2 text-sm text-gray-400 file:bg-gray-800 file:border-none file:text-emerald-500 file:px-4 file:py-1 file:rounded file:mr-4 file:text-xs file:font-black cursor-pointer">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="titular" class="block text-xs font-bold text-gray-500 uppercase">Titular Profesional</label>
+                        <input type="text" name="titular" id="titular" value="{{cv.titular}}" placeholder="Ej: Full Stack Developer | React | Node.js"
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="telefono" class="block text-xs font-bold text-gray-500 uppercase">Teléfono de Contacto</label>
+                        <input type="text" name="telefono" id="telefono" value="{{cv.telefono}}" placeholder="+57 300..."
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="github" class="block text-xs font-bold text-gray-500 uppercase">URL de GitHub</label>
+                        <input type="url" name="github" id="github" value="{{cv.github}}" placeholder="https://github.com/tu-usuario"
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="cv_archivo" class="block text-xs font-bold text-gray-500 uppercase">Subir CV (PDF/Word)</label>
+                        <input type="file" name="cv_archivo" id="cv_archivo" accept=".pdf,.doc,.docx"
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-2 text-sm text-gray-400 file:bg-gray-800 file:border-none file:text-emerald-500 file:px-4 file:py-1 file:rounded file:mr-4 file:text-xs file:font-black cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="resumen" class="block text-xs font-bold text-gray-500 uppercase">Acerca de mí (Resumen)</label>
+                    <textarea name="resumen" id="resumen" rows="4" placeholder="Breve descripción de tu trayectoria y valor diferencial..."
+                        class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all resize-none">{{cv.resumen}}</textarea>
+                </div>
+            </div>
+
+            <!-- Sección: Habilidades -->
+            <div class="space-y-6">
+                <h2 class=" font-bold text-emerald-400 border-b border-gray-800 pb-3 uppercase tracking-wider text-md">2. Habilidades (Separar por comas)</h2>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <label for="skills_tecnicas" class="block text-xs font-bold text-gray-500 uppercase">Técnicas (Hard Skills)</label>
+                        <input type="text" name="skills_tecnicas" id="skills_tecnicas" value="{{cv.skills_tecnicas}}" placeholder="React, Node.js, SQL, AWS..."
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="skills_blandas" class="block text-xs font-bold text-gray-500 uppercase">Blandas (Soft Skills)</label>
+                        <input type="text" name="skills_blandas" id="skills_blandas" value="{{cv.skills_blandas}}" placeholder="Liderazgo, Trabajo en equipo, Comunicación..."
+                            class="w-full bg-gray-950 border border-gray-800 rounded-lg px-4 py-3 text-sm text-white focus:ring-1 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección: Experiencia -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                    <h2 class="font-bold text-emerald-400 uppercase tracking-wider text-md">3. Experiencia Laboral</h2>
+                    <button type="button" onclick="agregarExperiencia()" class="text-emerald-500 hover:text-emerald-400 text-xs font-black uppercase flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i>Añadir
+                    </button>
+                </div>
+
+                <div id="contenedor-experiencia" class="space-y-6">
+                    {{#if cv.experiencia.length}}
+                        {{#each cv.experiencia}}
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group">
+                            <button type="button" onclick="eliminarFila(this)" class="absolute top-4 right-4 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <input type="text" name="exp_cargo[]" value="{{cargo}}" placeholder="Cargo" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_empresa[]" value="{{empresa}}" placeholder="Empresa" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_inicio[]" value="{{inicio}}" placeholder="Fecha Inicio" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_fin[]" value="{{fin}}" placeholder="Fecha Fin" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            </div>
+                            <textarea name="exp_logros[]" rows="3" placeholder="Logros y funciones principales..." class="w-full bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white resize-none">{{logros}}</textarea>
+                        </div>
+                        {{/each}}
+                    {{else}}
+                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4">
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <input type="text" name="exp_cargo[]" placeholder="Cargo" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_empresa[]" placeholder="Empresa" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_inicio[]" placeholder="Fecha Inicio" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                                <input type="text" name="exp_fin[]" placeholder="Fecha Fin" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            </div>
+                            <textarea name="exp_logros[]" rows="3" placeholder="Logros y funciones principales..." class="w-full bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white resize-none"></textarea>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- Sección: Educación -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-center border-b border-gray-800 pb-3">
+                    <h2 class="font-bold text-emerald-400 uppercase tracking-wider text-md">4. Educación</h2>
+                    <button type="button" onclick="agregarEducacion()" class="text-emerald-500 hover:text-emerald-400 text-xs font-black uppercase flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i>Añadir
+                    </button>
+                </div>
+
+                <div id="contenedor-educacion" class="space-y-4">
+                    {{#if cv.educacion.length}}
+                        {{#each cv.educacion}}
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4 relative group">
+                            <button type="button" onclick="eliminarFila(this)" class="absolute -right-2 -top-2 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                            <input type="text" name="edu_titulo[]" value="{{titulo}}" placeholder="Título" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="edu_inst[]" value="{{institucion}}" placeholder="Institución" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="edu_anio[]" value="{{anio}}" placeholder="Año de Graduación" class="yearpicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                        </div>
+                        {{/each}}
+                    {{else}}
+                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4">
+                            <input type="text" name="edu_titulo[]" placeholder="Título" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="edu_inst[]" placeholder="Institución" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="edu_anio[]" placeholder="Año de Graduación" class="yearpicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-gray-800 flex justify-end gap-4">
+                <a href="/perfil" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-3 px-8 rounded-xl text-sm transition-all uppercase">Cancelar</a>
+                <button type="submit" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black py-3 px-12 rounded-xl text-sm transition-all uppercase shadow-lg shadow-emerald-500/20 active:scale-95">
+                    Guardar Cambios
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function inicializarPickers() {
+        flatpickr(".datepicker", {
+            altInput: true,
+            altFormat: "F Y",
+            dateFormat: "Y-m-d",
+            theme: "dark",
+            locale: "es"
+        });
+
+        flatpickr(".yearpicker", {
+            altInput: true,
+            altFormat: "Y",
+            dateFormat: "Y",
+            theme: "dark",
+            locale: "es"
+        });
+    }
+
+    function agregarExperiencia() {
+        const div = document.createElement('div');
+        div.className = 'bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group animate-in fade-in slide-in-from-top-4 duration-300';
+        div.innerHTML = `
+            <button type="button" onclick="eliminarFila(this)" class="absolute top-4 right-4 text-red-500">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+            <div class="grid md:grid-cols-2 gap-4">
+                <input type="text" name="exp_cargo[]" placeholder="Cargo" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                <input type="text" name="exp_empresa[]" placeholder="Empresa" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                <input type="text" name="exp_inicio[]" placeholder="Fecha Inicio" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                <input type="text" name="exp_fin[]" placeholder="Fecha Fin" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+            </div>
+            <textarea name="exp_logros[]" rows="3" placeholder="Logros y funciones principales..." class="w-full bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white resize-none"></textarea>
+        `;
+        document.getElementById('contenedor-experiencia').appendChild(div);
+        inicializarPickers();
+    }
+
+    function agregarEducacion() {
+        const div = document.createElement('div');
+        div.className = 'bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4 relative group animate-in fade-in slide-in-from-top-2 duration-300';
+        div.innerHTML = `
+            <button type="button" onclick="eliminarFila(this)" class="absolute -right-2 -top-2 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] flex items-center justify-center">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <input type="text" name="edu_titulo[]" placeholder="Título" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+            <input type="text" name="edu_inst[]" placeholder="Institución" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+            <input type="text" name="edu_anio[]" placeholder="Año de Graduación" class="yearpicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+        `;
+        document.getElementById('contenedor-educacion').appendChild(div);
+        inicializarPickers();
+    }
+
+    function eliminarFila(btn) {
+        btn.closest('div').remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', inicializarPickers);
+</script>

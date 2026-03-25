@@ -1,9 +1,12 @@
 // homeController.js
+import { getVacantes } from '../services/homeService.js';
 
 export const home = async (req, res) => {
     try {
         // En el futuro, aquí usaremos "await" para ir a la base de datos.
         // Ejemplo: const vacantes = await Vacante.find();
+        const usuarioId = req.session?.usuario?.id || null;
+        const vacantes = await getVacantes(usuarioId);
 
         res.render('home', {
             nombrePagina: 'devJobs',
@@ -11,7 +14,7 @@ export const home = async (req, res) => {
             barra: true,
             boton: true,
             mostrarNav: true,
-            // vacantes: vacantes
+            vacantes: vacantes
         });
         
     } catch (error) {

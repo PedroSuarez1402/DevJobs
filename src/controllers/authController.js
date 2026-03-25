@@ -1,5 +1,5 @@
 /* Importaciones */
-import { crearUsuario, loginUsuario } from '../services/authService.js'; // Importamos el servicio de autenticacion
+import { confirmarCuenta, crearUsuario, loginUsuario, olvidePassword as olvidePasswordService, comprobarToken, nuevoPassword } from '../services/authService.js'; // Importamos el servicio de autenticacion
 
 /* Funcion para mostrar el formulario de registrarse */
 export const formularioRegistro = (req, res) => {
@@ -30,7 +30,7 @@ export const register = async (req, res) => {
             password
         });
         /* Respuesta de exito */
-        req.flash('exito', 'Cuenta creada correctamente');
+        req.flash('exito', 'Hemos enviado un correo de confirmación, por favor revisa tu bandeja de entrada');
         res.redirect('/auth/login');
     } catch (error) {
         req.flash('error', error.message);
@@ -80,4 +80,86 @@ export const cerrarSesion = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     })
+}
+
+export const confirmar = async (req, res) => {
+    try {
+        const { token } = req.params;
+
+        await confirmarCuenta(token);
+        req.flash('exito', '¡Cuenta confirmada Correctamente! Ya puedes iniciar sesion.');
+        res.redirect('/auth/login');
+    } catch (error) {
+        req.flash('error', error.message);
+        res.redirect('/auth/register');
+    }
+}
+
+/* Funcion para mostrar el formulario de olvide password */
+export const formularioOlvidePassword = (req, res) => {
+    res.render('auth/olvide-password', {
+        nombrePagina: 'Recuperar Contraseña',
+        tagline: 'Recupera el acceso a tu cuenta en devJobs',
+        mostrarNav: false,
+        centrarContenido: true,
+        ocultarBotonesAuth: true
+    })
+}
+
+/* Funcion para enviar el correo de recuperacion */
+export const olvidePassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if(!email){
+            throw new Error('El email es obligatorio');
+        }
+
+        await olvidePasswordService(email);
+        req.flash('exito', 'Hemos enviado un correo con las instrucciones a tu bandeja de entrada');
+        res.redirect('/auth/login');
+    } catch (error) {
+        req.flash('error', error.message);
+        res.redirect('/auth/olvide-password');
+    }
+}
+
+/* Funcion para mostrar el formulario de reestablecer password */
+export const formularioReestablecerPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        await comprobarToken(token);
+        res.render('auth/reestablecer-password', {
+            nombrePagina: 'Reestablecer Contraseña',
+            tagline: 'Coloca tu nueva contraseña en devJobs',
+            mostrarNav: false,
+            centrarContenido: true,
+            ocultarBotonesAuth: true
+        })
+    } catch (error) {
+        req.flash('error', error.message);
+        res.redirect('/auth/login');
+    }
+}
+
+/* Funcion para guardar la nueva contraseña */
+export const reestablecerPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const { password, confirmarPassword } = req.body;
+
+        if(!password || !confirmarPassword){
+            throw new Error('Todos los campos son obligatorios');
+        }
+
+        if(password !== confirmarPassword){
+            throw new Error('Las contraseñas no coinciden');
+        }
+
+        await nuevoPassword(token, password);
+        req.flash('exito', 'Contraseña actualizada correctamente. Ya puedes iniciar sesión.');
+        res.redirect('/auth/login');
+    } catch (error) {
+        req.flash('error', error.message);
+        res.redirect(`/auth/reestablecer-password/${req.params.token}`);
+    }
 }

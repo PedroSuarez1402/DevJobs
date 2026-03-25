@@ -23,7 +23,12 @@ app.use((req, res, next) => {
     next();
 });
 // Habilidar handlebars como motor de plantillas definiendo un layout
-app.engine('handlebars', engine({ defaultLayout: 'layout' }));
+app.engine('handlebars', engine({ 
+    defaultLayout: 'layout',
+    helpers: {
+        eq: (a, b) => a === b
+    }
+}));
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
@@ -31,6 +36,9 @@ const port = process.env.PORT || 5001;
 
 // Static files
 app.use(express.static('public'));
+app.use('/vendor/flatpickr', express.static('node_modules/flatpickr/dist'));
+app.use('/vendor/jquery', express.static('node_modules/jquery/dist'));
+app.use('/vendor/select2', express.static('node_modules/select2/dist'));
 
 app.use('/', router);
 // Conexion a la base de datos
