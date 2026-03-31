@@ -1,4 +1,4 @@
-import { verificarCV, verificarPostulacionPrevia, verificarPropietarioVacante, crearPostulacionDb } from '../services/postulacionesService.js'
+import { verificarCV, verificarPostulacionPrevia, verificarPropietarioVacante, crearPostulacionDb, getMisPostulaciones } from '../services/postulacionesService.js'
 
 export const postularAVacante = async (req, res) => {
     try {
@@ -21,10 +21,30 @@ export const postularAVacante = async (req, res) => {
         if (!tieneCV) {
             req.flash('error', 'Debes subir o crear tu Hoja de Vida en tu perfil antes de postularte.');
             return res.redirect('/perfil/editar');
+        } else {
+            await crearPostulacionDb(candidato_id, vacante_id);
+            req.flash('success', 'Postulación exitosa!');
+            return res.redirect(`/vacantes/${vacante_id}`);
         }
     } catch (error) {
         console.error("Error al postular a la vacante:", error);
         req.flash('error', 'Error al postular a la vacante');
         res.redirect(`/vacantes/${vacante_id}`);
+    }
+}
+
+export const verMisPostulaciones = async (req, res) => {
+    try {
+        const candidato_id = req.session.usuario.id;
+        const postulaciones = await getMisPostulaciones(candidato_id);
+        res.render('postulaciones/mis-postulaciones', { 
+            nombrePagina: 'Mis Postulaciones',
+            nombre: req.session.usuario.nombre,
+            postulaciones 
+        });
+    } catch (error) {
+        console.error("Error al obtener las postulaciones:", error);
+        req.flash('error', 'Error al obtener las postulaciones');
+        res.redirect('/');
     }
 }

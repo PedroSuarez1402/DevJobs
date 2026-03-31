@@ -1,0 +1,95 @@
+<div class="max-w-5xl mx-auto mt-10 px-4 mb-20">
+    
+    {{!-- Cabecera --}}
+    <div class="mb-10 border-b border-gray-800 pb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <h1 class="text-4xl font-black text-white mb-2">{{nombrePagina}}</h1>
+            <p class="text-xl text-gray-400">{{tagline}}</p>
+        </div>
+        <a href="/vacantes" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass"></i> Buscar más empleos
+        </a>
+    </div>
+
+    {{!-- Contenedor Principal --}}
+    {{#if postulaciones.length}}
+        <div class="space-y-6">
+            {{#each postulaciones}}
+                {{!-- Tarjeta de Postulación Individual --}}
+                <div class="bg-white/5 border border-gray-800 rounded-2xl p-6 hover:border-[#00C897] hover:shadow-[0_0_15px_rgba(0,200,151,0.05)] transition-all flex flex-col md:flex-row gap-6 items-start md:items-center relative overflow-hidden">
+                    
+                    {{!-- Decoración lateral sutil --}}
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gray-800 group-hover:bg-[#00C897] transition-colors"></div>
+
+                    {{!-- Logo o Foto del Empleador --}}
+                    <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0 bg-[#100E17] border border-gray-700 flex items-center justify-center ml-2">
+                        {{#if vacante.creador.foto_perfil}}
+                            <img src="/uploads/perfiles/{{vacante.creador.foto_perfil}}" alt="{{vacante.creador.nombre}}" class="w-full h-full object-cover">
+                        {{else}}
+                            <i class="fa-solid fa-building text-2xl text-gray-600"></i>
+                        {{/if}}
+                    </div>
+
+                    {{!-- Información de la Vacante --}}
+                    <div class="flex-1 w-full">
+                        <h3 class="text-2xl font-bold text-white mb-1">
+                            <a href="/vacantes/{{vacante_id}}" class="hover:text-[#00C897] transition-colors line-clamp-1">
+                                {{vacante.titulo}}
+                            </a>
+                        </h3>
+                        <p class="text-gray-400 text-sm mb-4 flex items-center gap-1.5">
+                            <i class="fa-solid fa-building text-gray-500"></i> {{vacante.creador.nombre}}
+                        </p>
+
+                        {{!-- Badges de Detalles --}}
+                        <div class="flex flex-wrap gap-2 text-xs font-bold">
+                            <span class="bg-[#100E17] border border-gray-800 text-gray-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-dot text-gray-500"></i> {{vacante.ubicacion}}
+                            </span>
+                            <span class="bg-[#100E17] border border-gray-800 text-gray-300 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
+                                <i class="fa-solid fa-money-bill-wave text-gray-500"></i> ${{vacante.salario}}
+                            </span>
+                            <span class="bg-[#100E17] border border-gray-800 text-gray-300 px-3 py-1.5 rounded-lg uppercase">
+                                {{vacante.tipo_contrato}}
+                            </span>
+                        </div>
+                    </div>
+
+                    {{!-- Estado del Proceso y Acciones --}}
+                    <div class="flex flex-col items-start md:items-end gap-4 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t border-gray-800 md:border-t-0 shrink-0">
+                        
+                        {{!-- Indicador de Estado Inteligente --}}
+                        {{#if (eq vacante.estado 'abierta')}}
+                            <div class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Proceso Activo
+                            </div>
+                        {{else}}
+                            <div class="bg-red-500/10 border border-red-500/30 text-red-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase flex items-center gap-2">
+                                <i class="fa-solid fa-lock"></i>
+                                Vacante Cerrada
+                            </div>
+                        {{/if}}
+                        
+                        {{!-- Botón de regreso a la vacante --}}
+                        <a href="/vacantes/{{vacante_id}}" class="w-full md:w-auto text-center px-5 py-2.5 border border-gray-600 text-gray-300 hover:text-white hover:border-[#00C897] hover:bg-[#00C897]/10 rounded-xl text-sm font-bold transition-all">
+                            Ver Detalles
+                        </a>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{else}}
+        {{!-- Empty State: Cuando no hay postulaciones --}}
+        <div class="text-center py-20 bg-white/5 border border-gray-800 border-dashed rounded-3xl mt-10 shadow-lg">
+            <div class="w-24 h-24 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-paper-plane text-4xl text-gray-500"></i>
+            </div>
+            <h2 class="text-3xl font-bold text-white mb-3">Aún no tienes postulaciones</h2>
+            <p class="text-gray-400 mb-8 max-w-md mx-auto text-lg">Explora nuestro catálogo de empleos y encuentra la oportunidad perfecta para dar el siguiente paso en tu carrera.</p>
+            <a href="/vacantes" class="inline-block bg-[#00C897] hover:bg-[#0a9b77] text-white font-bold py-3 px-8 rounded-xl transition-transform hover:scale-105 shadow-[0_0_20px_rgba(0,200,151,0.3)]">
+                Comenzar a Buscar
+            </a>
+        </div>
+    {{/if}}
+</div>
