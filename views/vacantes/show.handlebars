@@ -60,9 +60,11 @@
             <div class="bg-emerald-500 p-6 rounded-2xl shadow-lg shadow-emerald-500/10">
                 <h3 class="text-gray-950 text-lg font-black mb-4">¿Te interesa este puesto?</h3>
                 <p class="text-emerald-950 text-sm mb-6 leading-snug">Asegúrate de tener tu perfil actualizado antes de postularte.</p>
-                <button class="w-full bg-gray-950 hover:bg-gray-900 text-white font-black uppercase py-4 rounded-xl text-xs transition-all transform hover:-translate-y-1 active:scale-95">
-                    Postularme Ahora
-                </button>
+                <form action="/postulaciones/nueva/{{vacante.id}}" method="POST">
+                    <button class="w-full bg-gray-950 hover:bg-gray-900 text-white font-black uppercase py-4 rounded-xl text-xs transition-all transform hover:-translate-y-1 active:scale-95">
+                        Postularme Ahora
+                    </button>
+                </form>
             </div>
 
             {{!-- Información del Reclutador --}}

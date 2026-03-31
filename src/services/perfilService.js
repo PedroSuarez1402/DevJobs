@@ -31,18 +31,32 @@ export const obtenerPerfilCompleto = async (usuarioId) => {
  * Procesa y guarda los cambios del perfil y CV
  */
 export const actualizarPerfilYCV = async (usuarioId, datos, archivos) => {
-    const { 
-        nombre, titular, resumen, github, telefono, 
-        skills_tecnicas, skills_blandas, 
-        exp_cargo, exp_empresa, exp_inicio, exp_fin, exp_logros, 
-        edu_titulo, edu_inst, edu_anio
-    } = datos;
+    try {
+        // Los campos con [] en el name vienen como propiedades con ese nombre exacto en req.body (datos)
+        const { 
+            nombre, titular, resumen, github, telefono, 
+            skills_tecnicas, skills_blandas
+        } = datos;
+
+    // Campos de experiencia y educación (vienen como arrays por el name="campo[]")
+    const exp_cargo = datos.exp_cargo;
+        const exp_empresa = datos.exp_empresa;
+        const exp_inicio = datos.exp_inicio;
+        const exp_fin = datos.exp_fin;
+        const exp_logros = datos.exp_logros;
+        
+        const edu_titulo = datos.edu_titulo;
+        const edu_inst = datos.edu_inst;
+        const edu_anio = datos.edu_anio;
 
     // 1. Actualizar datos básicos del Usuario
     const usuario = await Usuario.findByPk(usuarioId);
+    if (!usuario) throw new Error('Usuario no encontrado');
+
     usuario.nombre = nombre;
     
-    if (archivos && archivos.foto_perfil) {
+    // Multer .fields() pone los archivos en arrays dentro de req.files
+    if (archivos && archivos.foto_perfil && archivos.foto_perfil[0]) {
         usuario.foto_perfil = archivos.foto_perfil[0].filename;
     }
     await usuario.save();
@@ -98,13 +112,20 @@ export const actualizarPerfilYCV = async (usuarioId, datos, archivos) => {
     cv.skills_blandas = skills_blandas;
     cv.experiencia = JSON.stringify(experienciaArr);
     cv.educacion = JSON.stringify(educacionArr);
-    cv.tipo = 'generado';
-
-    if (archivos && archivos.cv_archivo) {
+    
+    // Si se subió un archivo de CV, el tipo cambia a 'archivo'
+    if (archivos && archivos.cv_archivo && archivos.cv_archivo[0]) {
         cv.url_archivo = archivos.cv_archivo[0].filename;
         cv.tipo = 'archivo';
+    } else {
+        // Si no se subió archivo, nos aseguramos que el tipo sea 'generado'
+        cv.tipo = 'generado';
     }
 
     await cv.save();
     return { usuario, cv };
+    } catch (error) {
+        console.error('Error en actualizarPerfilYCV:', error);
+        throw error;
+    }
 };

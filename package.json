@@ -26,6 +26,7 @@
     "nodemailer": "^8.0.2",
     "select2": "^4.1.0-rc.0",
     "sequelize": "^6.37.8",
+    "sharp": "^0.34.5",
     "shortid": "^2.2.17",
     "tagify": "^0.1.1"
   },
