@@ -8,11 +8,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="/vendor/flatpickr/flatpickr.min.css">
-    <link rel="stylesheet" href="/vendor/flatpickr/themes/dark.css">
-    <link rel="stylesheet" href="/vendor/select2/css/select2.min.css">
-    <link rel="stylesheet" href="/css/custom.css">
-    <link rel="stylesheet" href="/css/app.css">
+    
+    {{#if isProduction}}
+        <link rel="stylesheet" href="/dist/assets/app.css">
+    {{else}}
+        <script type="module" src="http://localhost:5173/@vite/client"></script>
+    {{/if}}
+
     <title>{{nombrePagina}} | DevJobs</title>
 </head>
 <body class="bg-gray-950 font-sans text-gray-200 min-h-screen flex flex-col selection:bg-emerald-500/30 selection:text-emerald-400">
@@ -50,74 +52,10 @@
     {{> footer}}
 
     <!-- Scripts -->
-    <script src="/vendor/jquery/jquery.min.js"></script>
-    <script src="/vendor/select2/js/select2.min.js"></script>
-    <script src="/vendor/select2/js/i18n/es.js"></script>
-    <script src="/js/utils/select2-setup.js"></script>
-    <script src="/js/utils/location-autocomplete.js"></script>
-    <script src="/vendor/flatpickr/flatpickr.min.js"></script>
-    <script src="/vendor/flatpickr/l10n/es.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const toggleBtn = document.getElementById('toggleSidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-
-            if (toggleBtn && sidebar) {
-                const toggleSidebar = () => {
-                    const isMobile = window.innerWidth < 768;
-                    const isCollapsed = isMobile 
-                        ? sidebar.classList.contains('-translate-x-full') 
-                        : sidebar.classList.contains('md:w-0');
-                    
-                    if (isCollapsed) {
-                        // Abrir
-                        sidebar.classList.remove('-translate-x-full', 'md:w-0', 'md:border-none');
-                        sidebar.classList.add('translate-x-0', 'md:w-64');
-                        if (isMobile && overlay) overlay.classList.remove('hidden');
-                    } else {
-                        // Cerrar
-                        sidebar.classList.remove('translate-x-0', 'md:w-64');
-                        sidebar.classList.add('-translate-x-full', 'md:w-0', 'md:border-none');
-                        if (overlay) overlay.classList.add('hidden');
-                    }
-                };
-
-                toggleBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    toggleSidebar();
-                });
-
-                if (overlay) {
-                    overlay.addEventListener('click', toggleSidebar);
-                }
-
-                // Limpiar estados al redimensionar
-                window.addEventListener('resize', () => {
-                    if (window.innerWidth >= 768) {
-                        if (overlay) overlay.classList.add('hidden');
-                        sidebar.classList.remove('-translate-x-full', 'md:w-0', 'md:border-none');
-                        sidebar.classList.add('md:w-64');
-                    } else {
-                        // En móvil oculto por defecto
-                        if (!sidebar.classList.contains('translate-x-0')) {
-                            sidebar.classList.add('-translate-x-full');
-                        }
-                    }
-                });
-            }
-
-            // Ocultar alertas después de 5 segundos
-            const alerts = document.querySelectorAll('.alerta');
-            if (alerts.length > 0) {
-                setTimeout(() => {
-                    alerts.forEach(alert => {
-                        alert.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                        setTimeout(() => alert.remove(), 500);
-                    });
-                }, 5000);
-            }
-        });
-    </script>
+    {{#if isProduction}}
+        <script type="module" src="/dist/assets/app.js"></script>
+    {{else}}
+        <script type="module" src="http://localhost:5173/resources/js/app.js"></script>
+    {{/if}}
 </body>
 </html>

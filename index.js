@@ -27,6 +27,7 @@ app.use(flash());
 app.use((req, res, next) => {
     res.locals.mensajes = req.flash();
     res.locals.usuario = req.session.usuario || null;
+    res.locals.isProduction = process.env.NODE_ENV === 'production';
     next();
 });
 // Habilidar handlebars como motor de plantillas definiendo un layout
@@ -43,9 +44,6 @@ const port = process.env.PORT || 5001;
 
 // Static files
 app.use(express.static('public'));
-app.use('/vendor/flatpickr', express.static('node_modules/flatpickr/dist'));
-app.use('/vendor/jquery', express.static('node_modules/jquery/dist'));
-app.use('/vendor/select2', express.static('node_modules/select2/dist'));
 
 app.use('/', router);
 // Conexion a la base de datos

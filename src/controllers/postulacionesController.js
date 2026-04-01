@@ -24,7 +24,7 @@ export const postularAVacante = async (req, res) => {
         } else {
             await crearPostulacionDb(candidato_id, vacante_id);
             req.flash('success', 'Postulación exitosa!');
-            return res.redirect(`/vacantes/${vacante_id}`);
+            return res.redirect(`/vacantes`);
         }
     } catch (error) {
         console.error("Error al postular a la vacante:", error);

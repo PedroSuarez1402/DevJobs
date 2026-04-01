@@ -6,8 +6,10 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon --env-file=.env index.js",
-    "css:watch": "npx tailwindcss -i ./public/css/main.css -o ./public/css/app.css --watch",
-    "dev": "concurrently \"npm run server\" \"npm run css:watch\"",
+    "css:watch": "npx tailwindcss -i ./resources/css/main.css -o ./public/css/app.css --watch",
+    "vite": "vite",
+    "build": "vite build",
+    "dev": "concurrently \"npm run server\" \"npm run css:watch\" \"npm run vite\"",
     "start": "node --env-file=.env index.js"
   },
   "author": "Pedro",
@@ -28,15 +30,19 @@
     "sequelize": "^6.37.8",
     "sharp": "^0.34.5",
     "shortid": "^2.2.17",
+    "sweetalert": "^2.1.2",
+    "sweetalert2": "^11.26.24",
     "tagify": "^0.1.1"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.1",
+    "@tailwindcss/vite": "^4.2.2",
     "autoprefixer": "^10.4.27",
     "concurrently": "^9.2.1",
     "nodemon": "^3.1.14",
     "postcss": "^8.5.8",
     "sequelize-cli": "^6.6.5",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "vite": "^8.0.3"
   }
 }
