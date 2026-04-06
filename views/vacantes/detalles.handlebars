@@ -21,8 +21,8 @@
                     <p class="text-gray-400 text-sm mt-3">Recibiendo postulaciones</p>
                     
                     {{!-- BOTÓN PARA CERRAR --}}
-                    <form action="/vacantes/mis-vacantes/cerrar/{{vacante.id}}" method="POST" class="mt-6" onsubmit="return confirm('¿Seguro que deseas cerrar esta vacante? Ya no recibirás más postulaciones.');">
-                        <button type="submit" class="w-full bg-orange-500/10 border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-3 rounded-xl transition-colors">
+                    <form id="form-cerrar-{{vacante.id}}" action="/vacantes/mis-vacantes/cerrar/{{vacante.id}}" method="POST" class="mt-6" >
+                        <button type="button" onclick="confirmarCierre('{{vacante.id}}')" class="w-full bg-orange-500/10 border border-orange-500 text-orange-400 hover:bg-orange-500 hover:text-white font-bold py-3 rounded-xl transition-colors">
                             Cerrar Vacante
                         </button>
                     </form>
@@ -110,3 +110,26 @@
         
     </div>
 </div>
+
+<script>
+    // Función que se activa al hacer clic en el botón
+    function confirmarCierre(id) {
+        Swal.fire({
+            title: '¿Cerrar vacante?',
+            text: "Ya no recibirás más postulaciones para este cargo. Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f97316', // Color naranja (orange-500 de Tailwind)
+            cancelButtonColor: '#374151',  // Color gris oscuro para cancelar
+            confirmButtonText: 'Sí, cerrar vacante',
+            cancelButtonText: 'Cancelar',
+            background: '#111827', // Fondo oscuro
+            color: '#fff'          // Texto blanco
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si el usuario confirma, buscamos el formulario por su ID y lo enviamos
+                document.getElementById(`form-cerrar-${id}`).submit();
+            }
+        });
+    }
+</script>

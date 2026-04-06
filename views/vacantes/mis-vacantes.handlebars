@@ -16,9 +16,12 @@
                             <a href="/vacantes/editar/{{id}}" class="text-gray-500 hover:text-white transition-colors">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <button onclick="eliminarVacante('{{id}}')" class="text-gray-500 hover:text-red-500 transition-colors">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                            <form id="form-eliminar-{{id}}" action="/vacantes/eliminar/{{id}}" method="POST">
+                                <button type="button" onclick="confirmarEliminacion('{{id}}')" class="text-gray-500 hover:text-red-500 transition-colors">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                            
                         </div>
                     </div>
 
@@ -63,3 +66,24 @@
         </div>
     {{/if}}
 </div>
+<script>
+    function confirmarEliminacion(id) {
+        Swal.fire({
+            title: '¿Eliminar vacante?',
+            text: "Esta acción es irreversible. Se eliminará la vacante y todas las postulaciones asociadas a ella.",
+            icon: 'error', // Usamos icono de error (rojo) para denotar peligro
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444', // Color rojo (red-500 de Tailwind)
+            cancelButtonColor: '#374151',  // Color gris oscuro para cancelar
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            background: '#111827', // Fondo oscuro
+            color: '#fff'          // Texto blanco
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Si el usuario confirma, buscamos el formulario por su ID y lo enviamos
+                document.getElementById(`form-eliminar-${id}`).submit();
+            }
+        });
+    }
+</script>
