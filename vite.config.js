@@ -8,19 +8,19 @@ export default defineConfig({
   ],
   build: {
     outDir: 'public/dist',
-    manifest: true,
+    manifest: false,
     rollupOptions: {
-      input: {
-        app: path.resolve(__dirname, 'resources/js/app.js'),
-      },
+      input: path.resolve(__dirname, 'resources/js/app.js'),
       output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]',
+        entryFileNames: 'app.js',
+        chunkFileNames: 'app.js',
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith('.css')) {
+            return 'app.css';
+          }
+          return '[name].[ext]';
+        },
       }
     },
-  },
-  server: {
-    origin: 'http://localhost:5173',
   },
 });

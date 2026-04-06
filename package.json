@@ -6,10 +6,8 @@
   "main": "index.js",
   "scripts": {
     "server": "nodemon --env-file=.env index.js",
-    "css:watch": "npx tailwindcss -i ./resources/css/main.css -o ./public/css/app.css --watch",
-    "vite": "vite",
     "build": "vite build",
-    "dev": "concurrently \"npm run server\" \"npm run css:watch\" \"npm run vite\"",
+    "dev": "concurrently \"npm run server\" \"vite build --watch\"",
     "start": "node --env-file=.env index.js"
   },
   "author": "Pedro",
@@ -22,7 +20,7 @@
     "express-handlebars": "^8.0.2",
     "express-session": "^1.19.0",
     "flatpickr": "^4.6.13",
-    "jquery": "^4.0.0",
+    "jquery": "^3.7.1",
     "multer": "^2.1.1",
     "mysql2": "^3.19.1",
     "nodemailer": "^8.0.2",
@@ -30,11 +28,11 @@
     "sequelize": "^6.37.8",
     "sharp": "^0.34.5",
     "shortid": "^2.2.17",
-    "sweetalert": "^2.1.2",
     "sweetalert2": "^11.26.24",
     "tagify": "^0.1.1"
   },
   "devDependencies": {
+    "@rollup/plugin-inject": "^5.0.5",
     "@tailwindcss/cli": "^4.2.1",
     "@tailwindcss/vite": "^4.2.2",
     "autoprefixer": "^10.4.27",
