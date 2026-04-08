@@ -1,5 +1,5 @@
 import { getVacantes } from '../services/homeService.js';
-import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb } from '../services/vacanteService.js';
+import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion } from '../services/vacanteService.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -173,6 +173,28 @@ export const cerrarVacante = async (req, res) => {
         res.redirect(`/vacantes/mis-vacantes/${req.params.id}`);
     } catch (error) {
         req.flash('error', 'Error al cerrar la vacante');
+        res.redirect('/vacantes/mis-vacantes');
+    }
+}
+
+// Aceptar o rechazar una postulación
+export const actualizarEstadoPostulacion = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la postulación
+        const { estado, vacante_id } = req.body;
+        const empleadorId = req.session.usuario.id;
+
+        await cambiarEstadoPostulacion(id, estado, empleadorId);
+
+        const mensajes = {
+            aceptado: 'Candidato aceptado exitosamente',
+            rechazado: 'Candidato rechazado'
+        };
+
+        req.flash('exito', mensajes[estado] || 'Estado actualizado');
+        res.redirect(`/vacantes/mis-vacantes/${vacante_id}`);
+    } catch (error) {
+        req.flash('error', error.message || 'Error al actualizar el estado del candidato');
         res.redirect('/vacantes/mis-vacantes');
     }
 }

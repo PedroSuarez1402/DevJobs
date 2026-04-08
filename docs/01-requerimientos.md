@@ -38,6 +38,12 @@
 - **RF-027:** El sistema debe permitir a los usuarios ver la lista de sus postulaciones actuales.
 - **RF-028:** El sistema debe permitir al usuario ver el progreso de sus postulaciones actuales.
 
+### 1.5. Requerimientos Funcionales Adicionales
+- **RF-029 (Paginación y Rendimiento):** El sistema debe implementar paginación o scroll infinito en el listado de vacantes y en la tabla de candidatos para garantizar el rendimiento cuando existan miles de registros (vital para el RNF-001).
+- **RF-030 (Soft Deletes):** Cuando un empleador elimine una vacante, el sistema realizará un borrado lógico (soft delete) en la base de datos para preservar el historial de postulaciones de los candidatos, evitando inconsistencias de integridad referencial. (Esto en Sequelize se hace habilitando `paranoid: true` en el modelo).
+- **RF-031 (Panel de SuperAdministrador):** El sistema debe contar con un rol de "Administrador Global" que pueda suspender cuentas maliciosas, eliminar vacantes fraudulentas y ver estadísticas generales de la plataforma.
+- **RF-032 (Match Score):** Al ver la lista de postulantes, el sistema debe calcular y mostrar un porcentaje de compatibilidad (Match Score) entre las skills técnicas requeridas en la vacante y las skills del perfil del candidato.
+
 ## 2. Requerimientos No Funcionales
 
 - **RNF-001 (Rendimiento):** El tiempo de carga de la página principal y de los listados de vacantes no debe exceder los 2 segundos.
@@ -54,9 +60,6 @@
 - **HU-003:** Como **candidato**, quiero **llenar un formulario para generar mi CV** para no tener que preocuparme por el diseño y formato.
 - **HU-004:** Como **candidato**, quiero **buscar vacantes por tecnología (ej. "React")** para encontrar empleos que coincidan con mis habilidades.
 - **HU-005:** Como **reclutador**, quiero **ver la lista de postulantes a mi vacante** para poder gestionar el proceso de selección.
-- **HU-006:** Como **usuario**, quiero **crear un post sobre un nuevo framework** para compartir conocimiento con la comunidad.
-- **HU-007:** Como **usuario**, quiero **unirme a un canal de "Inteligencia Artificial"** para estar al día de las últimas tendencias.
-- **HU-008:** Como **usuario**, quiero **seguir a un desarrollador influyente** para ver sus posts y actividad en mi feed.
 
 ## 4. Reglas de Validación Clave
 

@@ -60,6 +60,7 @@
                                     <th scope="col" class="px-6 py-4">Candidato</th>
                                     <th scope="col" class="px-6 py-4">Email</th>
                                     <th scope="col" class="px-6 py-4">Hoja de Vida</th>
+                                    <th scope="col" class="px-6 py-4">Estado</th>
                                     <th scope="col" class="px-6 py-4">Acción</th>
                                 </tr>
                             </thead>
@@ -71,7 +72,6 @@
                                                 <img src="/uploads/perfiles/{{usuario.foto_perfil}}" class="w-10 h-10 rounded-full object-cover border border-gray-700">
                                             {{else}}
                                                 <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-500 font-bold">
-                                                    {{!-- Obtener la primera letra del nombre --}}
                                                     <i class="fa-solid fa-user"></i>
                                                 </div>
                                             {{/if}}
@@ -80,7 +80,6 @@
                                         <td class="px-6 py-4">{{usuario.email}}</td>
                                         
                                         <td class="px-6 py-4">
-                                            {{!-- Verificamos si tiene un CV subido --}}
                                             {{#if usuario.cvs.length}}
                                                 <a href="/uploads/cvs/{{usuario.cvs.[0].url_archivo}}" target="_blank" class="text-emerald-400 hover:text-emerald-300 hover:underline flex items-center gap-1">
                                                     <i class="fa-solid fa-file-pdf"></i> Ver Documento
@@ -89,10 +88,55 @@
                                                 <span class="text-gray-600 text-xs">Sin CV</span>
                                             {{/if}}
                                         </td>
+
+                                        {{!-- Columna de Estado --}}
                                         <td class="px-6 py-4">
-                                            <a href="mailto:{{usuario.email}}" class="bg-gray-800 hover:bg-emerald-500 hover:text-gray-950 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors">
-                                                Contactar
-                                            </a>
+                                            {{#if (eq estado 'pendiente')}}
+                                                <span class="bg-yellow-500/15 text-yellow-400 px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5 w-fit">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-pulse"></span> Pendiente
+                                                </span>
+                                            {{/if}}
+                                            {{#if (eq estado 'aceptado')}}
+                                                <span class="bg-emerald-500/15 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5 w-fit">
+                                                    <i class="fa-solid fa-check text-[10px]"></i> Aceptado
+                                                </span>
+                                            {{/if}}
+                                            {{#if (eq estado 'rechazado')}}
+                                                <span class="bg-red-500/15 text-red-400 px-3 py-1 rounded-full text-xs font-bold uppercase flex items-center gap-1.5 w-fit">
+                                                    <i class="fa-solid fa-xmark text-[10px]"></i> Rechazado
+                                                </span>
+                                            {{/if}}
+                                        </td>
+
+                                        {{!-- Columna de Acciones --}}
+                                        <td class="px-6 py-4">
+                                            {{#if (eq estado 'pendiente')}}
+                                                <div class="flex items-center gap-2">
+                                                    {{!-- Formulario oculto para Aceptar --}}
+                                                    <form id="form-aceptar-{{id}}" action="/vacantes/postulacion/estado/{{id}}" method="POST" class="hidden">
+                                                        <input type="hidden" name="estado" value="aceptado">
+                                                        <input type="hidden" name="vacante_id" value="{{../vacante.id}}">
+                                                    </form>
+                                                    <button type="button" onclick="confirmarAccion('{{id}}', 'aceptar')" 
+                                                        class="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 hover:bg-emerald-500 hover:text-white text-xs font-bold py-2 px-3 rounded-lg transition-all" title="Aceptar candidato">
+                                                        <i class="fa-solid fa-check mr-1"></i> Aceptar
+                                                    </button>
+
+                                                    {{!-- Formulario oculto para Rechazar --}}
+                                                    <form id="form-rechazar-{{id}}" action="/vacantes/postulacion/estado/{{id}}" method="POST" class="hidden">
+                                                        <input type="hidden" name="estado" value="rechazado">
+                                                        <input type="hidden" name="vacante_id" value="{{../vacante.id}}">
+                                                    </form>
+                                                    <button type="button" onclick="confirmarAccion('{{id}}', 'rechazar')" 
+                                                        class="bg-red-500/10 border border-red-500/50 text-red-400 hover:bg-red-500 hover:text-white text-xs font-bold py-2 px-3 rounded-lg transition-all" title="Rechazar candidato">
+                                                        <i class="fa-solid fa-xmark mr-1"></i> Rechazar
+                                                    </button>
+                                                </div>
+                                            {{else}}
+                                                <a href="mailto:{{usuario.email}}" class="bg-gray-800 hover:bg-emerald-500 hover:text-gray-950 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors">
+                                                    Contactar
+                                                </a>
+                                            {{/if}}
                                         </td>
                                     </tr>
                                 {{/each}}
@@ -112,23 +156,61 @@
 </div>
 
 <script>
-    // Función que se activa al hacer clic en el botón
+    // Función para cerrar vacante (ya existente)
     function confirmarCierre(id) {
         Swal.fire({
             title: '¿Cerrar vacante?',
             text: "Ya no recibirás más postulaciones para este cargo. Esta acción no se puede deshacer.",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#f97316', // Color naranja (orange-500 de Tailwind)
-            cancelButtonColor: '#374151',  // Color gris oscuro para cancelar
+            confirmButtonColor: '#f97316',
+            cancelButtonColor: '#374151',
             confirmButtonText: 'Sí, cerrar vacante',
             cancelButtonText: 'Cancelar',
-            background: '#111827', // Fondo oscuro
-            color: '#fff'          // Texto blanco
+            background: '#111827',
+            color: '#fff'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Si el usuario confirma, buscamos el formulario por su ID y lo enviamos
                 document.getElementById(`form-cerrar-${id}`).submit();
+            }
+        });
+    }
+
+    // Función para aceptar o rechazar un candidato
+    function confirmarAccion(postulacionId, accion) {
+        const config = {
+            aceptar: {
+                title: '¿Aceptar candidato?',
+                text: 'El candidato será marcado como aceptado para esta vacante.',
+                icon: 'question',
+                confirmButtonColor: '#10b981',
+                confirmButtonText: '<i class="fa-solid fa-check"></i> Sí, aceptar',
+            },
+            rechazar: {
+                title: '¿Rechazar candidato?',
+                text: 'El candidato será marcado como rechazado para esta vacante.',
+                icon: 'warning',
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: '<i class="fa-solid fa-xmark"></i> Sí, rechazar',
+            }
+        };
+
+        const c = config[accion];
+
+        Swal.fire({
+            title: c.title,
+            text: c.text,
+            icon: c.icon,
+            showCancelButton: true,
+            confirmButtonColor: c.confirmButtonColor,
+            cancelButtonColor: '#374151',
+            confirmButtonText: c.confirmButtonText,
+            cancelButtonText: 'Cancelar',
+            background: '#111827',
+            color: '#fff'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`form-${accion}-${postulacionId}`).submit();
             }
         });
     }
