@@ -1,5 +1,6 @@
 import { getVacantes } from '../services/homeService.js';
 import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion } from '../services/vacanteService.js';
+import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -55,12 +56,23 @@ export const verVacante = async (req, res) => {
             req.flash('error', 'Vacante no encontrada');
             return res.redirect('/vacantes');
         }
+
+        // Verificar si el usuario ya se ha postulado previamente a esta vacante
+        let postulacionPrevia = null;
+        if (req.session?.usuario) {
+            const result = await verificarPostulacionPrevia(req.session.usuario.id, id);
+            if (result) {
+                postulacionPrevia = result.toJSON();
+            }
+        }
+
         res.render('vacantes/show', {
             barra: true,
-            nombre: req.session.usuario.nombre,
-            email: req.session.usuario.email,
-            foto_perfil: req.session.usuario.foto_perfil,
-            vacante: vacante
+            nombre: req.session.usuario?.nombre,
+            email: req.session.usuario?.email,
+            foto_perfil: req.session.usuario?.foto_perfil,
+            vacante: vacante,
+            postulacionPrevia
         });
     } catch (error) {
         req.flash('error', 'Error al ver la vacante');
