@@ -7,13 +7,24 @@ import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, s
 
 export const Vacantes = async (req, res) => {
     const usuarioId = req.session?.usuario?.id || null;
-    const vacantes = await getVacantes(usuarioId);
+    
+    // Extraer filtros de búsqueda de la URL (query params)
+    const filtros = {
+        keyword: req.query.keyword || '',
+        ubicacion: req.query.ubicacion || '',
+        tipo_contrato: req.query.tipo_contrato || '',
+        pagina: req.query.pagina || 1
+    };
+
+    const { vacantes, paginacion } = await getVacantes(usuarioId, filtros);
     res.render('vacantes/vacantes', {
         barra: true,
         nombre: req.session.usuario.nombre,
         email: req.session.usuario.email,
         foto_perfil: req.session.usuario.foto_perfil,
-        vacantes: vacantes
+        vacantes,
+        paginacion,
+        filtros
     });
 }
 export const formularioNuevaVacante = (req, res) => {

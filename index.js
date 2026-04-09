@@ -34,7 +34,30 @@ app.use((req, res, next) => {
 app.engine('handlebars', engine({ 
     defaultLayout: 'layout',
     helpers: {
-        eq: (a, b) => a === b
+        eq: (a, b) => a === b,
+        sum: (a, b) => a + b,
+        subtract: (a, b) => a - b,
+        range: (from, to) => {
+            const arr = [];
+            for (let i = from; i <= to; i++) arr.push(i);
+            return arr;
+        },
+        buildQuery: (filtros, pagina) => {
+            const params = new URLSearchParams();
+            if (filtros.keyword) params.set('keyword', filtros.keyword);
+            if (filtros.ubicacion) params.set('ubicacion', filtros.ubicacion);
+            if (filtros.tipo_contrato) params.set('tipo_contrato', filtros.tipo_contrato);
+            params.set('pagina', pagina);
+            return params.toString();
+        },
+        formatDate: (dateString) => {
+            if (!dateString) return '';
+            const d = new Date(dateString);
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}-${month}-${year}`;
+        }
     }
 }));
 app.set('view engine', 'handlebars');
