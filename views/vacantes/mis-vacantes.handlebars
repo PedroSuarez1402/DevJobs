@@ -16,9 +16,12 @@
                             <a href="/vacantes/editar/{{id}}" class="text-gray-500 hover:text-white transition-colors">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <button onclick="eliminarVacante('{{id}}')" class="text-gray-500 hover:text-red-500 transition-colors">
-                                <i class="fa-solid fa-trash-can"></i>
-                            </button>
+                            <form id="form-eliminar-{{id}}" action="/vacantes/eliminar/{{id}}" method="POST">
+                                <button type="button" onclick="confirmarEliminacion('{{id}}')" class="text-gray-500 hover:text-red-500 transition-colors">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </form>
+                            
                         </div>
                     </div>
 
@@ -42,7 +45,7 @@
                             Ver Detalles
                             <i class="fa-solid fa-arrow-right"></i>
                         </a>
-                        <a href="/vacantes/candidatos/{{id}}" class="text-[10px] font-black uppercase bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition-all">
+                        <a href="/vacantes/mis-vacantes/{{id}}" class="text-[10px] font-black uppercase bg-gray-800 hover:bg-gray-700 text-white px-3 py-1.5 rounded-lg transition-all">
                             Candidatos
                         </a>
                     </div>
@@ -63,30 +66,24 @@
         </div>
     {{/if}}
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function eliminarVacante(id) {
+    function confirmarEliminacion(id) {
         Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Una vez eliminada, no podrás recuperar esta vacante ni sus postulaciones.",
-            icon: 'warning',
+            title: '¿Eliminar vacante?',
+            text: "Esta acción es irreversible. Se eliminará la vacante y todas las postulaciones asociadas a ella.",
+            icon: 'error', // Usamos icono de error (rojo) para denotar peligro
             showCancelButton: true,
-            confirmButtonColor: '#10b981', // emerald-500
-            cancelButtonColor: '#ef4444', // red-500
+            confirmButtonColor: '#ef4444', // Color rojo (red-500 de Tailwind)
+            cancelButtonColor: '#374151',  // Color gris oscuro para cancelar
             confirmButtonText: 'Sí, eliminar',
             cancelButtonText: 'Cancelar',
-            background: '#111827',
-            color: '#fff'
+            background: '#111827', // Fondo oscuro
+            color: '#fff'          // Texto blanco
         }).then((result) => {
             if (result.isConfirmed) {
-                // Crear un formulario temporal para enviar el POST
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/vacantes/eliminar/${id}`;
-                document.body.appendChild(form);
-                form.submit();
+                // Si el usuario confirma, buscamos el formulario por su ID y lo enviamos
+                document.getElementById(`form-eliminar-${id}`).submit();
             }
-        })
+        });
     }
 </script>

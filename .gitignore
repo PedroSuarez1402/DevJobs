@@ -23,6 +23,7 @@ logs
 .env.development.local
 .env.test.local
 .env.production.local
+public/dist
 
 # IDE files
 .vscode/

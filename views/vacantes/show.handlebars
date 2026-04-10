@@ -25,7 +25,7 @@
                             </div>
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-solid fa-calendar-day text-emerald-500"></i>
-                                <span>Publicado el {{vacante.fecha_publicacion}}</span>
+                                <span>Publicado el {{formatDate vacante.fecha_publicacion}}</span>
                             </div>
                         </div>
                     </div>
@@ -56,14 +56,48 @@
 
         {{!-- Columna Lateral: Acciones y Reclutador --}}
         <div class="space-y-6">
-            {{!-- Card de Acción --}}
-            <div class="bg-emerald-500 p-6 rounded-2xl shadow-lg shadow-emerald-500/10">
-                <h3 class="text-gray-950 text-lg font-black mb-4">¿Te interesa este puesto?</h3>
-                <p class="text-emerald-950 text-sm mb-6 leading-snug">Asegúrate de tener tu perfil actualizado antes de postularte.</p>
-                <button class="w-full bg-gray-950 hover:bg-gray-900 text-white font-black uppercase py-4 rounded-xl text-xs transition-all transform hover:-translate-y-1 active:scale-95">
-                    Postularme Ahora
-                </button>
-            </div>
+            {{#if postulacionPrevia}}
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-700 text-center">
+                    <h3 class="text-white text-lg font-black mb-2">Ya te postulaste a esta vacante</h3>
+                    <p class="text-gray-400 text-sm mb-5">Estado actual de tu proceso:</p>
+                    
+                    {{#if (eq postulacionPrevia.estado 'pendiente')}}
+                        <div class="inline-flex items-center gap-2 bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 px-5 py-2.5 rounded-full text-sm font-bold uppercase">
+                            <span class="w-2.5 h-2.5 rounded-full bg-yellow-400 animate-pulse"></span>
+                            En Revisión
+                        </div>
+                    {{/if}}
+                    {{#if (eq postulacionPrevia.estado 'aceptado')}}
+                        <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-5 py-2.5 rounded-full text-sm font-bold uppercase">
+                            <i class="fa-solid fa-circle-check"></i>
+                            Aceptado
+                        </div>
+                    {{/if}}
+                    {{#if (eq postulacionPrevia.estado 'rechazado')}}
+                        <div class="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/30 text-red-400 px-5 py-2.5 rounded-full text-sm font-bold uppercase">
+                            <i class="fa-solid fa-circle-xmark"></i>
+                            Rechazado
+                        </div>
+                    {{/if}}
+
+                    <div class="mt-6 pt-6 border-t border-gray-700">
+                        <a href="/postulaciones/mis-postulaciones" class="text-emerald-400 hover:text-emerald-300 font-bold text-sm transition-colors flex items-center justify-center gap-2">
+                            Ver todas mis postulaciones <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            {{else}}
+                {{!-- Card de Acción --}}
+                <div class="bg-emerald-500 p-6 rounded-2xl shadow-lg shadow-emerald-500/10">
+                    <h3 class="text-gray-950 text-lg font-black mb-4">¿Te interesa este puesto?</h3>
+                    <p class="text-emerald-950 text-sm mb-6 leading-snug">Asegúrate de tener tu perfil actualizado antes de postularte.</p>
+                    <form action="/postulaciones/nueva/{{vacante.id}}" method="POST">
+                        <button class="w-full bg-gray-950 hover:bg-gray-900 text-white font-black uppercase py-4 rounded-xl text-xs transition-all transform hover:-translate-y-1 active:scale-95">
+                            Postularme Ahora
+                        </button>
+                    </form>
+                </div>
+            {{/if}}
 
             {{!-- Información del Reclutador --}}
             <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6">

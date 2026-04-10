@@ -16,6 +16,11 @@ export const crearUsuario = async (datosUsuario) => {
     if(existeUsuario){
         throw new Error('El email ya está registrado');
     }else{
+        /* Validar complejidad de la contraseña (VAL-002) */
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            throw new Error('La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula y un número');
+        }
         /* Encriptar la contraseña */
         const passwordEncriptado = await encriptarPassword(password);
         const token = generarToken();

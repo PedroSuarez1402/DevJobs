@@ -1,5 +1,7 @@
 import { getVacantes } from '../services/homeService.js';
-import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb } from '../services/vacanteService.js';
+import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion } from '../services/vacanteService.js';
+import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
+import { emailPostulacionAceptada } from '../utils/emails.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -7,13 +9,24 @@ import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, s
 
 export const Vacantes = async (req, res) => {
     const usuarioId = req.session?.usuario?.id || null;
-    const vacantes = await getVacantes(usuarioId);
+    
+    // Extraer filtros de búsqueda de la URL (query params)
+    const filtros = {
+        keyword: req.query.keyword || '',
+        ubicacion: req.query.ubicacion || '',
+        tipo_contrato: req.query.tipo_contrato || '',
+        pagina: req.query.pagina || 1
+    };
+
+    const { vacantes, paginacion } = await getVacantes(usuarioId, filtros);
     res.render('vacantes/vacantes', {
         barra: true,
         nombre: req.session.usuario.nombre,
         email: req.session.usuario.email,
         foto_perfil: req.session.usuario.foto_perfil,
-        vacantes: vacantes
+        vacantes,
+        paginacion,
+        filtros
     });
 }
 export const formularioNuevaVacante = (req, res) => {
@@ -44,12 +57,23 @@ export const verVacante = async (req, res) => {
             req.flash('error', 'Vacante no encontrada');
             return res.redirect('/vacantes');
         }
+
+        // Verificar si el usuario ya se ha postulado previamente a esta vacante
+        let postulacionPrevia = null;
+        if (req.session?.usuario) {
+            const result = await verificarPostulacionPrevia(req.session.usuario.id, id);
+            if (result) {
+                postulacionPrevia = result.toJSON();
+            }
+        }
+
         res.render('vacantes/show', {
             barra: true,
-            nombre: req.session.usuario.nombre,
-            email: req.session.usuario.email,
-            foto_perfil: req.session.usuario.foto_perfil,
-            vacante: vacante
+            nombre: req.session.usuario?.nombre,
+            email: req.session.usuario?.email,
+            foto_perfil: req.session.usuario?.foto_perfil,
+            vacante: vacante,
+            postulacionPrevia
         });
     } catch (error) {
         req.flash('error', 'Error al ver la vacante');
@@ -173,6 +197,37 @@ export const cerrarVacante = async (req, res) => {
         res.redirect(`/vacantes/mis-vacantes/${req.params.id}`);
     } catch (error) {
         req.flash('error', 'Error al cerrar la vacante');
+        res.redirect('/vacantes/mis-vacantes');
+    }
+}
+
+// Aceptar o rechazar una postulación
+export const actualizarEstadoPostulacion = async (req, res) => {
+    try {
+        const { id } = req.params; // ID de la postulación
+        const { estado, vacante_id } = req.body;
+        const empleadorId = req.session.usuario.id;
+
+        const postulacion = await cambiarEstadoPostulacion(id, estado, empleadorId);
+
+        // Si la postulación fue aceptada, enviar correo al candidato
+        if (estado === 'aceptado') {
+            await emailPostulacionAceptada({
+                email: postulacion.usuario.email,
+                nombre: postulacion.usuario.nombre,
+                vacante: postulacion.vacante.titulo
+            });
+        }
+
+        const mensajes = {
+            aceptado: 'Candidato aceptado exitosamente',
+            rechazado: 'Candidato rechazado'
+        };
+
+        req.flash('exito', mensajes[estado] || 'Estado actualizado');
+        res.redirect(`/vacantes/mis-vacantes/${vacante_id}`);
+    } catch (error) {
+        req.flash('error', error.message || 'Error al actualizar el estado del candidato');
         res.redirect('/vacantes/mis-vacantes');
     }
 }

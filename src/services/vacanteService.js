@@ -28,7 +28,7 @@ export const showVacante = async (id) => {
                 {
                     model: Usuario,
                     as: 'creador',
-                    attributes: ['nombre', 'email', 'foto_perfil']
+                    attributes: ['id', 'nombre', 'email', 'foto_perfil']
                 }
             ]
         });
@@ -121,6 +121,43 @@ export const cerrarVacanteDb = async (id) => {
         return true;
     } catch (error) {
         console.error("Error al cerrar la vacante:", error);
+        throw error;
+    }
+}
+
+/* Cambiar el estado de una postulación (aceptar/rechazar) */
+export const cambiarEstadoPostulacion = async (postulacionId, nuevoEstado, empleadorId) => {
+    try {
+        // Validar que el estado sea válido
+        const estadosValidos = ['aceptado', 'rechazado'];
+        if (!estadosValidos.includes(nuevoEstado)) {
+            throw new Error('Estado no válido');
+        }
+
+        // Buscar la postulación con su vacante y el candidato
+        const postulacion = await Postulaciones.findByPk(postulacionId, {
+            include: [
+                { model: Vacantes },
+                { model: Usuario, attributes: ['nombre', 'email'] }
+            ]
+        });
+
+        if (!postulacion) {
+            throw new Error('Postulación no encontrada');
+        }
+
+        // Verificar que el empleador sea el dueño de la vacante
+        if (postulacion.vacante.empleador_id !== empleadorId) {
+            throw new Error('No tienes permisos para modificar esta postulación');
+        }
+
+        // Actualizar el estado
+        postulacion.estado = nuevoEstado;
+        await postulacion.save();
+
+        return postulacion;
+    } catch (error) {
+        console.error("Error al cambiar estado de postulación:", error);
         throw error;
     }
 }
