@@ -3,7 +3,8 @@ import { protegerRuta } from '../middlewares/authMiddleware.js';
 import { 
     formularioNuevaVacante, Vacantes, crearVacante, verVacante, 
     misVacantes, editarVacante, eliminarVacante, formularioEditarVacante, 
-    verDetallesMisVacantes, cerrarVacante, actualizarEstadoPostulacion 
+    verDetallesMisVacantes, cerrarVacante, actualizarEstadoPostulacion,
+    verEstadisticasVacante
 } from '../controllers/vacantesController.js';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ router.get('/nueva', protegerRuta, formularioNuevaVacante);
 router.post('/nueva', protegerRuta, crearVacante);
 router.get('/mis-vacantes', protegerRuta, misVacantes);
 router.get('/mis-vacantes/:id', protegerRuta, verDetallesMisVacantes);
+router.get('/estadisticas/:id', protegerRuta, verEstadisticasVacante);
 
 // NUEVA RUTA:
 router.post('/mis-vacantes/cerrar/:id', protegerRuta, cerrarVacante);

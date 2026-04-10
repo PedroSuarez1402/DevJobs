@@ -35,6 +35,7 @@ app.engine('handlebars', engine({
     defaultLayout: 'layout',
     helpers: {
         eq: (a, b) => a === b,
+        gt: (a, b) => a > b,
         sum: (a, b) => a + b,
         subtract: (a, b) => a - b,
         range: (from, to) => {
@@ -57,7 +58,8 @@ app.engine('handlebars', engine({
             const month = String(d.getMonth() + 1).padStart(2, '0');
             const year = d.getFullYear();
             return `${day}-${month}-${year}`;
-        }
+        },
+        json: (context) => JSON.stringify(context)
     }
 }));
 app.set('view engine', 'handlebars');

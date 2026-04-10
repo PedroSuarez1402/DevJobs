@@ -1,4 +1,6 @@
 import { Vacantes, Usuario, Postulaciones, CVs } from "../models/index.js"
+import { calcularMatchScore } from "../utils/matchScore.js"
+
 // ==========================================
 // 1. OPERACIONES BÁSICAS Y PÚBLICAS
 // ==========================================
@@ -12,7 +14,8 @@ export const guardarVacante = async (datosVacante, empleador_id) => {
             salario: datosVacante.salario,
             tipo_contrato: datosVacante.tipo_contrato,
             ubicacion: ubicacionFinal,
-            empleador_id: empleador_id
+            empleador_id: empleador_id,
+            skills: datosVacante.skills // Guardar skills (vendrá como string separado por comas)
         });
         return vacante;
     } catch (error) {
@@ -21,7 +24,7 @@ export const guardarVacante = async (datosVacante, empleador_id) => {
     }
 }
 
-export const showVacante = async (id) => {
+export const showVacante = async (id, incrementViews = false) => {
     try {
         const vacante = await Vacantes.findByPk(id, {
             include: [
@@ -33,6 +36,12 @@ export const showVacante = async (id) => {
             ]
         });
         if (!vacante) return null;
+
+        if (incrementViews) {
+            vacante.visualizaciones += 1;
+            await vacante.save();
+        }
+
         return vacante.toJSON();
     } catch (error) {
         console.error("Error al obtener la vacante:", error);
@@ -72,6 +81,7 @@ export const actualizarVacante = async (id, datosActualizados) => {
         vacante.salario = datosActualizados.salario;
         vacante.tipo_contrato = datosActualizados.tipo_contrato;
         vacante.ubicacion = ubicacionFinal;
+        vacante.skills = datosActualizados.skills; // Actualizar skills
 
         await vacante.save();
         return vacante;
@@ -98,14 +108,27 @@ export const getCandidatosPorVacante = async (id) => {
             where: { vacante_id: id },
             include: [
                 {
+                    model: Vacantes,
+                    attributes: ['skills']
+                },
+                {
                     model: Usuario,
                     attributes: ['id', 'nombre', 'foto_perfil', 'email'],
-                    // ¡NUEVO! Traemos el CV del candidato
-                    include: [{ model: CVs, attributes: ['url_archivo', 'tipo'] }] 
+                    include: [{ model: CVs, attributes: ['url_archivo', 'tipo', 'skills_tecnicas'] }] 
                 }
             ]
         });
-        return candidatos.map(postulacion => postulacion.toJSON());
+        
+        // Calcular match score para cada candidato
+        return candidatos.map(postulacion => {
+            const data = postulacion.toJSON();
+            const skillsVacante = data.vacante?.skills || '';
+            const cv = data.usuario?.cvs?.[0];
+            const skillsCandidato = cv?.skills_tecnicas || '';
+            
+            data.matchScore = calcularMatchScore(skillsVacante, skillsCandidato);
+            return data;
+        });
     } catch (error) {
         console.error("Error al obtener los candidatos:", error);
         throw error;
@@ -123,6 +146,58 @@ export const cerrarVacanteDb = async (id) => {
         console.error("Error al cerrar la vacante:", error);
         throw error;
     }
+}
+
+/* Obtener estadísticas detalladas de una vacante */
+export const getEstadisticasVacante = async (id, empleadorId) => {
+    try {
+        const vacante = await Vacantes.findByPk(id, {
+            include: [{
+                model: Postulaciones,
+                attributes: ['fecha_postulacion']
+            }]
+        });
+
+        if (!vacante) throw new Error('Vacante no encontrada');
+        if (vacante.empleador_id !== empleadorId) throw new Error('No autorizado');
+
+        const totalPostulaciones = vacante.postulaciones.length;
+        const totalVisualizaciones = vacante.visualizaciones || 0;
+        
+        // Tasa de conversión (%)
+        const tasaConversion = totalVisualizaciones > 0 
+            ? ((totalPostulaciones / totalVisualizaciones) * 100).toFixed(1) 
+            : 0;
+
+        // Agrupar postulaciones por día (últimos 7 días)
+        const postulacionesPorDia = {};
+        const hoy = new Date();
+        for (let i = 6; i >= 0; i--) {
+            const fecha = new Date(hoy);
+            fecha.setDate(hoy.getDate() - i);
+            const fechaStr = fecha.toISOString().split('T')[0];
+            postulacionesPorDia[fechaStr] = 0;
+        }
+
+        vacante.postulaciones.forEach(post => {
+            const fechaStr = new Date(post.fecha_postulacion).toISOString().split('T')[0];
+            if (postulacionesPorDia.hasOwnProperty(fechaStr)) {
+                postulacionesPorDia[fechaStr]++;
+            }
+        });
+
+        return {
+            titulo: vacante.titulo,
+            totalPostulaciones,
+            totalVisualizaciones,
+            tasaConversion,
+            labels: Object.keys(postulacionesPorDia),
+            data: Object.values(postulacionesPorDia)
+         };
+     } catch (error) {
+         console.error("Error al obtener estadísticas:", error);
+         throw error;
+     }
 }
 
 /* Cambiar el estado de una postulación (aceptar/rechazar) */

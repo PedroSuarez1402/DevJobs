@@ -34,6 +34,14 @@ const Vacantes = db.define('vacantes', {
     estado: {
         type: DataTypes.ENUM('abierta', 'cerrada'),
         defaultValue: 'abierta'
+    },
+    skills: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    visualizaciones: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 }, {
     timestamps: false

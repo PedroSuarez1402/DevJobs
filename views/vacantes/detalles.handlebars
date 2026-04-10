@@ -58,6 +58,7 @@
                             <thead class="text-xs text-gray-500 uppercase bg-black/20 border-b border-gray-800">
                                 <tr>
                                     <th scope="col" class="px-6 py-4">Candidato</th>
+                                    <th scope="col" class="px-6 py-4">Match Score</th>
                                     <th scope="col" class="px-6 py-4">Email</th>
                                     <th scope="col" class="px-6 py-4">Hoja de Vida</th>
                                     <th scope="col" class="px-6 py-4">Estado</th>
@@ -76,6 +77,14 @@
                                                 </div>
                                             {{/if}}
                                             {{usuario.nombre}}
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-full bg-gray-800 rounded-full h-2 max-w-[100px]">
+                                                    <div class="h-2 rounded-full {{#if (eq matchScore 100)}}bg-emerald-500{{else}}{{#if (gt matchScore 70)}}bg-blue-500{{else}}bg-orange-500{{/if}}{{/if}}" style="width: {{matchScore}}%"></div>
+                                                </div>
+                                                <span class="text-xs font-black {{#if (eq matchScore 100)}}text-emerald-400{{else}}{{#if (gt matchScore 70)}}text-blue-400{{else}}text-orange-400{{/if}}{{/if}}">{{matchScore}}%</span>
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4">{{usuario.email}}</td>
                                         

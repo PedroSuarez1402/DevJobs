@@ -1,0 +1,134 @@
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-black text-white mb-2">{{nombrePagina}}</h1>
+            <p class="text-gray-400 font-medium">{{tagline}}</p>
+        </div>
+        <a href="/vacantes/mis-vacantes" class="bg-gray-800 hover:bg-gray-700 text-white px-6 py-3 rounded-xl text-sm font-black uppercase transition-all flex items-center gap-2 w-fit">
+            <i class="fa-solid fa-arrow-left"></i>
+            Volver al Panel
+        </a>
+    </div>
+
+    <!-- Tarjetas de Resumen -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center text-blue-500">
+                    <i class="fa-solid fa-eye text-xl"></i>
+                </div>
+                <h3 class="text-gray-400 text-sm font-bold uppercase tracking-wider">Visualizaciones</h3>
+            </div>
+            <p class="text-4xl font-black text-white">{{estadisticas.totalVisualizaciones}}</p>
+            <p class="text-xs text-gray-500 mt-2">Personas que han visto la vacante</p>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center text-emerald-500">
+                    <i class="fa-solid fa-users text-xl"></i>
+                </div>
+                <h3 class="text-gray-400 text-sm font-bold uppercase tracking-wider">Postulaciones</h3>
+            </div>
+            <p class="text-4xl font-black text-white">{{estadisticas.totalPostulaciones}}</p>
+            <p class="text-xs text-gray-500 mt-2">Candidatos interesados</p>
+        </div>
+
+        <div class="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center gap-4 mb-2">
+                <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center text-purple-500">
+                    <i class="fa-solid fa-chart-pie text-xl"></i>
+                </div>
+                <h3 class="text-gray-400 text-sm font-bold uppercase tracking-wider">Tasa de Conversión</h3>
+            </div>
+            <p class="text-4xl font-black text-white">{{estadisticas.tasaConversion}}%</p>
+            <p class="text-xs text-gray-500 mt-2">Porcentaje de vistas que postulan</p>
+        </div>
+    </div>
+
+    <!-- Gráfica de Postulaciones -->
+    <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-sm mb-10">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-emerald-500"></i>
+            Crecimiento de Postulaciones (Últimos 7 días)
+        </h3>
+        <div class="h-[400px] w-full">
+            <canvas id="graficaPostulaciones"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('graficaPostulaciones').getContext('2d');
+        
+        // Datos pasados desde el servidor
+        const labels = {{{json estadisticas.labels}}};
+        const data = {{{json estadisticas.data}}};
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Nuevas Postulaciones',
+                    data: data,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 10,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#9ca3af',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(75, 85, 99, 0.2)'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#9ca3af',
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>

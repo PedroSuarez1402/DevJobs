@@ -1,5 +1,9 @@
 import { getVacantes } from '../services/homeService.js';
-import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion } from '../services/vacanteService.js';
+import { 
+    actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, 
+    showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion,
+    getEstadisticasVacante
+} from '../services/vacanteService.js';
 import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
 import { emailPostulacionAceptada } from '../utils/emails.js';
 
@@ -52,7 +56,7 @@ export const crearVacante = async (req, res) => {
 export const verVacante = async (req, res) => {
     try {
         const id = req.params.id;
-        const vacante = await showVacante(id);
+        const vacante = await showVacante(id, true); // Incrementamos visualizaciones
         if (!vacante) {
             req.flash('error', 'Vacante no encontrada');
             return res.redirect('/vacantes');
@@ -228,6 +232,26 @@ export const actualizarEstadoPostulacion = async (req, res) => {
         res.redirect(`/vacantes/mis-vacantes/${vacante_id}`);
     } catch (error) {
         req.flash('error', error.message || 'Error al actualizar el estado del candidato');
+        res.redirect('/vacantes/mis-vacantes');
+    }
+}
+
+// Mostrar el panel de estadísticas
+export const verEstadisticasVacante = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const empleadorId = req.session.usuario.id;
+
+        const estadisticas = await getEstadisticasVacante(id, empleadorId);
+
+        res.render('vacantes/estadisticas', {
+            nombrePagina: `Estadísticas: ${estadisticas.titulo}`,
+            tagline: 'Análisis de visualizaciones y postulaciones',
+            estadisticas,
+            mostrarNav: true
+        });
+    } catch (error) {
+        req.flash('error', error.message || 'Error al cargar las estadísticas');
         res.redirect('/vacantes/mis-vacantes');
     }
 }
