@@ -134,9 +134,12 @@ export const cambiarEstadoPostulacion = async (postulacionId, nuevoEstado, emple
             throw new Error('Estado no válido');
         }
 
-        // Buscar la postulación con su vacante
+        // Buscar la postulación con su vacante y el candidato
         const postulacion = await Postulaciones.findByPk(postulacionId, {
-            include: [{ model: Vacantes }]
+            include: [
+                { model: Vacantes },
+                { model: Usuario, attributes: ['nombre', 'email'] }
+            ]
         });
 
         if (!postulacion) {

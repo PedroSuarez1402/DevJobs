@@ -1,9 +1,13 @@
 import { verificarCV, verificarPostulacionPrevia, verificarPropietarioVacante, crearPostulacionDb, getMisPostulaciones } from '../services/postulacionesService.js'
+import { showVacante } from '../services/vacanteService.js'
+import { emailConfirmacionPostulacion, emailNotificacionEmpleador } from '../utils/emails.js'
 
 export const postularAVacante = async (req, res) => {
     try {
         const vacante_id = req.params.id;
         const candidato_id = req.session.usuario.id;
+        const nombreCandidato = req.session.usuario.nombre;
+        const emailCandidato = req.session.usuario.email;
 
         const esPropietario = await verificarPropietarioVacante(candidato_id, vacante_id);
         if (esPropietario) {
@@ -23,6 +27,25 @@ export const postularAVacante = async (req, res) => {
             return res.redirect('/perfil/editar');
         } else {
             await crearPostulacionDb(candidato_id, vacante_id);
+
+            // Obtener información de la vacante y el empleador
+            const vacante = await showVacante(vacante_id);
+
+            // Enviar correo de confirmación al candidato
+            await emailConfirmacionPostulacion({
+                email: emailCandidato,
+                nombre: nombreCandidato,
+                vacante: vacante.titulo
+            });
+
+            // Enviar correo de notificación al empleador
+            await emailNotificacionEmpleador({
+                emailEmpleador: vacante.creador.email,
+                nombreEmpleador: vacante.creador.nombre,
+                nombreCandidato: nombreCandidato,
+                vacante: vacante.titulo
+            });
+
             req.flash('success', 'Postulación exitosa!');
             return res.redirect(`/vacantes`);
         }

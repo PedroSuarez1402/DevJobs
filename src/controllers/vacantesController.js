@@ -1,6 +1,7 @@
 import { getVacantes } from '../services/homeService.js';
 import { actualizarVacante, eliminarVacanteDb, getMisVacantes, guardarVacante, showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion } from '../services/vacanteService.js';
 import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
+import { emailPostulacionAceptada } from '../utils/emails.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -207,7 +208,16 @@ export const actualizarEstadoPostulacion = async (req, res) => {
         const { estado, vacante_id } = req.body;
         const empleadorId = req.session.usuario.id;
 
-        await cambiarEstadoPostulacion(id, estado, empleadorId);
+        const postulacion = await cambiarEstadoPostulacion(id, estado, empleadorId);
+
+        // Si la postulación fue aceptada, enviar correo al candidato
+        if (estado === 'aceptado') {
+            await emailPostulacionAceptada({
+                email: postulacion.usuario.email,
+                nombre: postulacion.usuario.nombre,
+                vacante: postulacion.vacante.titulo
+            });
+        }
 
         const mensajes = {
             aceptado: 'Candidato aceptado exitosamente',
