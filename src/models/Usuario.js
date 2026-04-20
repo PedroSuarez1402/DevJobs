@@ -35,6 +35,19 @@ const Usuario = db.define('usuarios',
         resumen: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        telefono: {
+            type: DataTypes.STRING(20),
+            allowNull: true
+        },
+        rol: {
+            type: DataTypes.ENUM('candidato', 'empleador', 'admin'),
+            defaultValue: 'candidato',
+            allowNull: false
+        },
+        skills: {
+            type: DataTypes.TEXT,
+            allowNull: true
         }
     }
 );
