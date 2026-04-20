@@ -6,6 +6,7 @@ import {
 } from '../services/vacanteService.js';
 import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
 import { emailPostulacionAceptada } from '../utils/emails.js';
+import { calcularMatchScore } from '../utils/matchScore.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -113,14 +114,25 @@ export const verDetallesMisVacantes = async (req, res) => {
             return res.redirect('/vacantes/mis-vacantes');
         }
         
-        const candidatos = await getCandidatosPorVacante(id);
-        
+        const candidatosRaw = await getCandidatosPorVacante(id);
+
+        // --- LÓGICA DE MATCH SCORE ---
+        // Transformamos los candidatos para incluir su puntaje de compatibilidad
+        const candidatos = candidatosRaw.map(c => {
+            const candidato = c.get({ plain: true }); // Convertimos a objeto plano de JS
+            
+            // Calculamos el score usando las skills de la vacante y las del usuario
+            candidato.matchScore = calcularMatchScore(vacante.skills, candidato.usuario.skills);
+            
+            return candidato;
+        }).sort((a, b) => b.matchScore - a.matchScore); // Ordenar de mayor a menor score
+
         res.render('vacantes/detalles', {
             nombrePagina: `Candidatos: ${vacante.titulo}`,
             tagline: 'Administra los postulantes a esta oferta',
             nombre: req.session.usuario.nombre,
             vacante,
-            candidatos // Pasamos los candidatos (que ahora incluyen sus CVs) a la vista
+            candidatos 
         });
     } catch (error) {
         req.flash('error', 'Hubo un error al cargar los detalles de la vacante');

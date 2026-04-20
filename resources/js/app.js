@@ -18,6 +18,8 @@ import Swal from 'sweetalert2';
 // 1. Estilos
 import '../css/main.css';
 import '../css/custom.css';
+import Tagify from '@yaireo/tagify';
+import '@yaireo/tagify/dist/tagify.css';
 
 
 // 5. Asignaciones explícitas para Handlebars
@@ -49,6 +51,31 @@ window.eliminarVacante = function(id) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('input.skills').forEach((input) => {
+        if (input.dataset.tagifyInitialized === '1') return;
+        input.dataset.tagifyInitialized = '1';
+
+        const tagify = new Tagify(input, {
+            delimiters: ',',
+            dropdown: {
+                enabled: 0
+            },
+            originalInputValueFormat: (valuesArr) => valuesArr.map((item) => item.value).join(',')
+        });
+
+        const initialValue = (input.value || '').trim();
+        if (initialValue.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(initialValue);
+                if (Array.isArray(parsed)) {
+                    tagify.removeAllTags();
+                    tagify.addTags(parsed);
+                    input.value = parsed.map((t) => (t && typeof t === 'object' ? t.value : t)).filter(Boolean).join(',');
+                }
+            } catch (_) {}
+        }
+    });
     
     // --- Select2 Setup con traducción manual inyectada ---
     $('.select2').each(function() {

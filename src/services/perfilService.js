@@ -35,7 +35,7 @@ export const actualizarPerfilYCV = async (usuarioId, datos, archivos) => {
         // Los campos con [] en el name vienen como propiedades con ese nombre exacto en req.body (datos)
         const { 
             nombre, titular, resumen, github, telefono, 
-            skills_tecnicas, skills_blandas
+            skills_tecnicas, skills_blandas, skills
         } = datos;
 
     // Campos de experiencia y educación (vienen como arrays por el name="campo[]")
@@ -54,6 +54,7 @@ export const actualizarPerfilYCV = async (usuarioId, datos, archivos) => {
     if (!usuario) throw new Error('Usuario no encontrado');
 
     usuario.nombre = nombre;
+    usuario.skills = skills;
     
     // Multer .fields() pone los archivos en arrays dentro de req.files
     if (archivos && archivos.foto_perfil && archivos.foto_perfil[0]) {

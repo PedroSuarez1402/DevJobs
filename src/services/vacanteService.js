@@ -113,7 +113,7 @@ export const getCandidatosPorVacante = async (id) => {
                 },
                 {
                     model: Usuario,
-                    attributes: ['id', 'nombre', 'foto_perfil', 'email'],
+                    attributes: ['id', 'nombre', 'foto_perfil', 'email', 'skills', 'telefono'],
                     include: [{ model: CVs, attributes: ['url_archivo', 'tipo', 'skills_tecnicas'] }] 
                 }
             ]
@@ -124,9 +124,11 @@ export const getCandidatosPorVacante = async (id) => {
             const data = postulacion.toJSON();
             const skillsVacante = data.vacante?.skills || '';
             const cv = data.usuario?.cvs?.[0];
-            const skillsCandidato = cv?.skills_tecnicas || '';
+            const skillsCandidato = data.usuario?.skills || cv?.skills_tecnicas || '';
+            const telefonoLimpio = (data.usuario?.telefono || '').replace(/\D/g, '');
             
             data.matchScore = calcularMatchScore(skillsVacante, skillsCandidato);
+            data.whatsappUrl = telefonoLimpio ? `https://wa.me/${telefonoLimpio}` : null;
             return data;
         });
     } catch (error) {
