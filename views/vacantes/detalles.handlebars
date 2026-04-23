@@ -48,7 +48,7 @@
             <div class="bg-white/5 border border-gray-800 rounded-2xl overflow-hidden">
                 <div class="p-6 border-b border-gray-800 bg-[#100E17]">
                     <h2 class="text-2xl font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-users text-emerald-400"></i> Candidatos Postulados ({{candidatos.length}})
+                        <i class="fa-solid fa-users text-emerald-400"></i> Candidatos Postulados ({{paginacion.totalCandidatos}})
                     </h2>
                 </div>
 
@@ -166,6 +166,44 @@
                             </tbody>
                         </table>
                     </div>
+                    {{#if (gt paginacion.totalPaginas 1)}}
+                        <div class="p-6 border-t border-gray-800 bg-black/10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                            <div class="text-xs text-gray-500 font-bold uppercase tracking-wider">
+                                Página {{paginacion.paginaActual}} de {{paginacion.totalPaginas}}
+                            </div>
+                            <div class="flex items-center gap-2">
+                                {{#if paginacion.hayAnterior}}
+                                    <a href="/vacantes/mis-vacantes/{{vacante.id}}?pagina={{paginaAnterior}}" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors inline-flex items-center gap-2">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                        Anterior
+                                    </a>
+                                {{else}}
+                                    <span class="bg-gray-900 text-gray-600 text-xs font-bold py-2 px-3 rounded-lg inline-flex items-center gap-2 cursor-not-allowed">
+                                        <i class="fa-solid fa-chevron-left"></i>
+                                        Anterior
+                                    </span>
+                                {{/if}}
+
+                                {{#each paginas}}
+                                    <a href="/vacantes/mis-vacantes/{{../vacante.id}}?pagina={{this}}" class="{{#if (eq this ../paginacion.paginaActual)}}bg-emerald-500 text-gray-950{{else}}bg-gray-800 hover:bg-gray-700 text-white{{/if}} text-xs font-black py-2 px-3 rounded-lg transition-colors">
+                                        {{this}}
+                                    </a>
+                                {{/each}}
+
+                                {{#if paginacion.haySiguiente}}
+                                    <a href="/vacantes/mis-vacantes/{{vacante.id}}?pagina={{paginaSiguiente}}" class="bg-gray-800 hover:bg-gray-700 text-white text-xs font-bold py-2 px-3 rounded-lg transition-colors inline-flex items-center gap-2">
+                                        Siguiente
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </a>
+                                {{else}}
+                                    <span class="bg-gray-900 text-gray-600 text-xs font-bold py-2 px-3 rounded-lg inline-flex items-center gap-2 cursor-not-allowed">
+                                        Siguiente
+                                        <i class="fa-solid fa-chevron-right"></i>
+                                    </span>
+                                {{/if}}
+                            </div>
+                        </div>
+                    {{/if}}
                 {{else}}
                     <div class="p-10 text-center">
                         <i class="fa-regular fa-face-frown-open text-5xl text-gray-600 mb-4 block"></i>

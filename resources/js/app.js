@@ -14,6 +14,7 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/dark.css';
 import Swal from 'sweetalert2';
+import Chart from 'chart.js/auto';
 
 // 1. Estilos
 import '../css/main.css';
@@ -51,6 +52,184 @@ window.eliminarVacante = function(id) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    window.eliminarFila = function(btn) {
+        const row = btn.closest('.js-dynamic-row');
+        if (row) row.remove();
+    };
+
+    const initDatepickers = (root = document) => {
+        root.querySelectorAll('.datepicker').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "F Y",
+                dateFormat: "Y-m-d",
+                theme: "dark"
+            });
+        });
+
+        root.querySelectorAll('.yearpicker').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "Y",
+                dateFormat: "Y",
+                theme: "dark"
+            });
+        });
+
+        root.querySelectorAll('.flatpickr').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                theme: "dark"
+            });
+        });
+    };
+
+    initDatepickers();
+
+    const parseJsonAttr = (value) => {
+        if (!value) return null;
+        try {
+            return JSON.parse(value);
+        } catch (_) {
+            return null;
+        }
+    };
+
+    const graficaConversion = document.getElementById('graficaConversion');
+    if (graficaConversion && graficaConversion.dataset.chartInitialized !== '1') {
+        graficaConversion.dataset.chartInitialized = '1';
+        const visitas = Number(graficaConversion.dataset.visitas || 0);
+        const postulaciones = Number(graficaConversion.dataset.postulaciones || 0);
+
+        new Chart(graficaConversion.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Visitas', 'Postulaciones'],
+                datasets: [{
+                    data: [visitas, postulaciones],
+                    backgroundColor: ['#3b82f6', '#10b981'],
+                    borderColor: ['#111827', '#111827'],
+                    borderWidth: 2,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 10
+                    }
+                }
+            }
+        });
+    }
+
+    const graficaPostulaciones = document.getElementById('graficaPostulaciones');
+    if (graficaPostulaciones && graficaPostulaciones.dataset.chartInitialized !== '1') {
+        graficaPostulaciones.dataset.chartInitialized = '1';
+        const labels = parseJsonAttr(graficaPostulaciones.dataset.labels) || [];
+        const values = parseJsonAttr(graficaPostulaciones.dataset.values) || [];
+
+        new Chart(graficaPostulaciones.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Nuevas Postulaciones',
+                    data: values,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 10,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        },
+                        grid: { color: 'rgba(75, 85, 99, 0.2)' }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    window.agregarExperiencia = function() {
+        const tpl = document.getElementById('tpl-experiencia');
+        const contenedor = document.getElementById('contenedor-experiencia');
+        if (!tpl || !contenedor) return;
+
+        const fragment = tpl.content.cloneNode(true);
+        const node = fragment.firstElementChild;
+        contenedor.appendChild(fragment);
+        initDatepickers(node || contenedor);
+        const firstInput = contenedor.querySelector('.js-dynamic-row:last-child input');
+        if (firstInput) firstInput.focus();
+    };
+
+    window.agregarEducacion = function() {
+        const tpl = document.getElementById('tpl-educacion');
+        const contenedor = document.getElementById('contenedor-educacion');
+        if (!tpl || !contenedor) return;
+
+        const fragment = tpl.content.cloneNode(true);
+        contenedor.appendChild(fragment);
+        initDatepickers(contenedor);
+        const firstInput = contenedor.querySelector('.js-dynamic-row:last-child input');
+        if (firstInput) firstInput.focus();
+    };
 
     document.querySelectorAll('input.skills').forEach((input) => {
         if (input.dataset.tagifyInitialized === '1') return;
@@ -159,31 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // --- Flatpickr Setup ---
-    flatpickr(".datepicker", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "F Y",
-        dateFormat: "Y-m-d",
-        theme: "dark"
-    });
-
-    flatpickr(".yearpicker", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "Y",
-        dateFormat: "Y",
-        theme: "dark"
-    });
-
-    flatpickr(".flatpickr", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d",
-        theme: "dark"
-    });
 
     // --- Sidebar and UI Logic ---
     const sidebar = document.getElementById('sidebar');

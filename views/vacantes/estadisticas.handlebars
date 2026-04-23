@@ -46,89 +46,28 @@
         </div>
     </div>
 
+    <!-- Gráfica de Conversión -->
+    <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-sm mb-10">
+        <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-purple-500"></i>
+            Conversión (Visitas vs Postulaciones)
+        </h3>
+        <p class="text-sm text-gray-400 mb-6">
+            De {{estadisticas.totalVisualizaciones}} visitas, tuviste {{estadisticas.totalPostulaciones}} postulaciones = <span class="font-black text-white">{{estadisticas.tasaConversion}}%</span> de conversión.
+        </p>
+        <div class="h-[360px] w-full">
+            <canvas id="graficaConversion" data-visitas="{{estadisticas.totalVisualizaciones}}" data-postulaciones="{{estadisticas.totalPostulaciones}}"></canvas>
+        </div>
+    </div>
+
     <!-- Gráfica de Postulaciones -->
     <div class="bg-gray-900 border border-gray-800 p-8 rounded-3xl shadow-sm mb-10">
         <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
             <i class="fa-solid fa-chart-line text-emerald-500"></i>
             Crecimiento de Postulaciones (Últimos 7 días)
         </h3>
-        <div class="h-100 w-full">
-            <canvas id="graficaPostulaciones"></canvas>
+        <div class="h-[400px] w-full">
+            <canvas id="graficaPostulaciones" data-labels='{{json estadisticas.labels}}' data-values='{{json estadisticas.data}}'></canvas>
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ctx = document.getElementById('graficaPostulaciones').getContext('2d');
-        
-        // Datos pasados desde el servidor
-        const labels = {{{json estadisticas.labels}}};
-        const data = {{{json estadisticas.data}}};
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Nuevas Postulaciones',
-                    data: data,
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#10b981',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: '#1f2937',
-                        titleColor: '#fff',
-                        bodyColor: '#cbd5e1',
-                        padding: 12,
-                        cornerRadius: 10,
-                        displayColors: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            stepSize: 1,
-                            color: '#9ca3af',
-                            font: {
-                                size: 12
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(75, 85, 99, 0.2)'
-                        }
-                    },
-                    x: {
-                        ticks: {
-                            color: '#9ca3af',
-                            font: {
-                                size: 12
-                            }
-                        },
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>

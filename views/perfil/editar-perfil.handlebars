@@ -93,7 +93,7 @@
                 <div id="contenedor-experiencia" class="space-y-6">
                     {{#if cv.experiencia.length}}
                         {{#each cv.experiencia}}
-                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group">
+                        <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group">
                             <button type="button" onclick="eliminarFila(this)" class="absolute top-4 right-4 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <i class="fa-solid fa-trash-can"></i>
                             </button>
@@ -107,7 +107,7 @@
                         </div>
                         {{/each}}
                     {{else}}
-                        <div class="bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4">
+                        <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4">
                             <div class="grid md:grid-cols-2 gap-4">
                                 <input type="text" name="exp_cargo[]" placeholder="Cargo" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
                                 <input type="text" name="exp_empresa[]" placeholder="Empresa" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
@@ -118,6 +118,20 @@
                         </div>
                     {{/if}}
                 </div>
+                <template id="tpl-experiencia">
+                    <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-6 rounded-xl space-y-4 relative group">
+                        <button type="button" onclick="eliminarFila(this)" class="absolute top-4 right-4 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <input type="text" name="exp_cargo[]" placeholder="Cargo" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="exp_empresa[]" placeholder="Empresa" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="exp_inicio[]" placeholder="Fecha Inicio" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                            <input type="text" name="exp_fin[]" placeholder="Fecha Fin" class="datepicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                        </div>
+                        <textarea name="exp_logros[]" rows="3" placeholder="Logros y funciones principales..." class="w-full bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white resize-none"></textarea>
+                    </div>
+                </template>
             </div>
 
             <!-- Sección: Educación -->
@@ -132,7 +146,7 @@
                 <div id="contenedor-educacion" class="space-y-4">
                     {{#if cv.educacion.length}}
                         {{#each cv.educacion}}
-                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4 relative group">
+                        <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4 relative group">
                             <button type="button" onclick="eliminarFila(this)" class="absolute -right-2 -top-2 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <i class="fa-solid fa-xmark"></i>
                             </button>
@@ -142,13 +156,23 @@
                         </div>
                         {{/each}}
                     {{else}}
-                        <div class="bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4">
+                        <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4">
                             <input type="text" name="edu_titulo[]" placeholder="Título" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
                             <input type="text" name="edu_inst[]" placeholder="Institución" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
                             <input type="text" name="edu_anio[]" placeholder="Año de Graduación" class="yearpicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
                         </div>
                     {{/if}}
                 </div>
+                <template id="tpl-educacion">
+                    <div class="js-dynamic-row bg-gray-950 border border-gray-800 p-4 rounded-xl grid md:grid-cols-3 gap-4 relative group">
+                        <button type="button" onclick="eliminarFila(this)" class="absolute -right-2 -top-2 w-6 h-6 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                        <input type="text" name="edu_titulo[]" placeholder="Título" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                        <input type="text" name="edu_inst[]" placeholder="Institución" class="bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                        <input type="text" name="edu_anio[]" placeholder="Año de Graduación" class="yearpicker bg-gray-900 border-gray-800 rounded-md p-2 text-sm text-white">
+                    </div>
+                </template>
             </div>
 
             <div class="pt-8 border-t border-gray-800 flex justify-end gap-4">
