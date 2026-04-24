@@ -1,5 +1,5 @@
 // Borra las importaciones individuales y cámbialas por esta:
-import { Vacantes, Usuario } from '../models/index.js';
+import { Vacantes, Usuario, Postulaciones } from '../models/index.js';
 import { Op } from 'sequelize';
 
 export const getVacantes = async ( usuarioActualId = null, filtros = {}) => {
@@ -8,6 +8,17 @@ export const getVacantes = async ( usuarioActualId = null, filtros = {}) => {
     if (usuarioActualId){
         condicion.empleador_id ={
             [Op.ne]: usuarioActualId
+        }
+
+        const postuladas = await Postulaciones.findAll({
+            where: { candidato_id: usuarioActualId },
+            attributes: ['vacante_id'],
+            raw: true
+        });
+
+        const idsPostuladas = postuladas.map(p => p.vacante_id).filter(Boolean);
+        if (idsPostuladas.length) {
+            condicion.id = { [Op.notIn]: idsPostuladas };
         }
     }
 

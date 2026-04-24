@@ -14,10 +14,13 @@ import { Spanish } from 'flatpickr/dist/l10n/es.js';
 import 'flatpickr/dist/flatpickr.min.css';
 import 'flatpickr/dist/themes/dark.css';
 import Swal from 'sweetalert2';
+import Chart from 'chart.js/auto';
 
 // 1. Estilos
 import '../css/main.css';
 import '../css/custom.css';
+import Tagify from '@yaireo/tagify';
+import '@yaireo/tagify/dist/tagify.css';
 
 
 // 5. Asignaciones explícitas para Handlebars
@@ -49,6 +52,242 @@ window.eliminarVacante = function(id) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    window.eliminarFila = function(btn) {
+        const row = btn.closest('.js-dynamic-row');
+        if (row) row.remove();
+    };
+
+    document.querySelectorAll('form[data-swal-confirm="1"]').forEach((form) => {
+        if (form.dataset.swalBound === '1') return;
+        form.dataset.swalBound = '1';
+
+        form.addEventListener('submit', (e) => {
+            if (form.dataset.swalConfirmed === '1') return;
+            e.preventDefault();
+
+            const title = form.dataset.swalTitle || '¿Confirmar acción?';
+            const text = form.dataset.swalText || '';
+            const confirmText = form.dataset.swalConfirmText || 'Confirmar';
+            const confirmColor = form.dataset.swalConfirmColor || '#10b981';
+
+            Swal.fire({
+                title,
+                text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: confirmColor,
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: '#111827',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.dataset.swalConfirmed = '1';
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            });
+        });
+    });
+
+    const initDatepickers = (root = document) => {
+        root.querySelectorAll('.datepicker').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "F Y",
+                dateFormat: "Y-m-d",
+                theme: "dark"
+            });
+        });
+
+        root.querySelectorAll('.yearpicker').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "Y",
+                dateFormat: "Y",
+                theme: "dark"
+            });
+        });
+
+        root.querySelectorAll('.flatpickr').forEach((el) => {
+            if (el._flatpickr) return;
+            flatpickr(el, {
+                locale: Spanish,
+                altInput: true,
+                altFormat: "F j, Y",
+                dateFormat: "Y-m-d",
+                theme: "dark"
+            });
+        });
+    };
+
+    initDatepickers();
+
+    const parseJsonAttr = (value) => {
+        if (!value) return null;
+        try {
+            return JSON.parse(value);
+        } catch (_) {
+            return null;
+        }
+    };
+
+    const graficaConversion = document.getElementById('graficaConversion');
+    if (graficaConversion && graficaConversion.dataset.chartInitialized !== '1') {
+        graficaConversion.dataset.chartInitialized = '1';
+        const visitas = Number(graficaConversion.dataset.visitas || 0);
+        const postulaciones = Number(graficaConversion.dataset.postulaciones || 0);
+
+        new Chart(graficaConversion.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Visitas', 'Postulaciones'],
+                datasets: [{
+                    data: [visitas, postulaciones],
+                    backgroundColor: ['#3b82f6', '#10b981'],
+                    borderColor: ['#111827', '#111827'],
+                    borderWidth: 2,
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 10
+                    }
+                }
+            }
+        });
+    }
+
+    const graficaPostulaciones = document.getElementById('graficaPostulaciones');
+    if (graficaPostulaciones && graficaPostulaciones.dataset.chartInitialized !== '1') {
+        graficaPostulaciones.dataset.chartInitialized = '1';
+        const labels = parseJsonAttr(graficaPostulaciones.dataset.labels) || [];
+        const values = parseJsonAttr(graficaPostulaciones.dataset.values) || [];
+
+        new Chart(graficaPostulaciones.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Nuevas Postulaciones',
+                    data: values,
+                    borderColor: '#10b981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10b981',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1f2937',
+                        titleColor: '#fff',
+                        bodyColor: '#cbd5e1',
+                        padding: 12,
+                        cornerRadius: 10,
+                        displayColors: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        },
+                        grid: { color: 'rgba(75, 85, 99, 0.2)' }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#9ca3af',
+                            font: { size: 12 }
+                        },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+
+    window.agregarExperiencia = function() {
+        const tpl = document.getElementById('tpl-experiencia');
+        const contenedor = document.getElementById('contenedor-experiencia');
+        if (!tpl || !contenedor) return;
+
+        const fragment = tpl.content.cloneNode(true);
+        const node = fragment.firstElementChild;
+        contenedor.appendChild(fragment);
+        initDatepickers(node || contenedor);
+        const firstInput = contenedor.querySelector('.js-dynamic-row:last-child input');
+        if (firstInput) firstInput.focus();
+    };
+
+    window.agregarEducacion = function() {
+        const tpl = document.getElementById('tpl-educacion');
+        const contenedor = document.getElementById('contenedor-educacion');
+        if (!tpl || !contenedor) return;
+
+        const fragment = tpl.content.cloneNode(true);
+        contenedor.appendChild(fragment);
+        initDatepickers(contenedor);
+        const firstInput = contenedor.querySelector('.js-dynamic-row:last-child input');
+        if (firstInput) firstInput.focus();
+    };
+
+    document.querySelectorAll('input.skills').forEach((input) => {
+        if (input.dataset.tagifyInitialized === '1') return;
+        input.dataset.tagifyInitialized = '1';
+
+        const tagify = new Tagify(input, {
+            delimiters: ',',
+            dropdown: {
+                enabled: 0
+            },
+            originalInputValueFormat: (valuesArr) => valuesArr.map((item) => item.value).join(',')
+        });
+
+        const initialValue = (input.value || '').trim();
+        if (initialValue.startsWith('[')) {
+            try {
+                const parsed = JSON.parse(initialValue);
+                if (Array.isArray(parsed)) {
+                    tagify.removeAllTags();
+                    tagify.addTags(parsed);
+                    input.value = parsed.map((t) => (t && typeof t === 'object' ? t.value : t)).filter(Boolean).join(',');
+                }
+            } catch (_) {}
+        }
+    });
     
     // --- Select2 Setup con traducción manual inyectada ---
     $('.select2').each(function() {
@@ -132,31 +371,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-
-    // --- Flatpickr Setup ---
-    flatpickr(".datepicker", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "F Y",
-        dateFormat: "Y-m-d",
-        theme: "dark"
-    });
-
-    flatpickr(".yearpicker", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "Y",
-        dateFormat: "Y",
-        theme: "dark"
-    });
-
-    flatpickr(".flatpickr", {
-        locale: Spanish,
-        altInput: true,
-        altFormat: "F j, Y",
-        dateFormat: "Y-m-d",
-        theme: "dark"
-    });
 
     // --- Sidebar and UI Logic ---
     const sidebar = document.getElementById('sidebar');

@@ -4,8 +4,10 @@ import {
     showVacante, getCandidatosPorVacante, cerrarVacanteDb, cambiarEstadoPostulacion,
     getEstadisticasVacante
 } from '../services/vacanteService.js';
+import { Vacantes as VacantesModel, Usuario } from '../models/index.js';
 import { verificarPostulacionPrevia } from '../services/postulacionesService.js';
 import { emailPostulacionAceptada } from '../utils/emails.js';
+import { calcularMatchScore } from '../utils/matchScore.js';
 
 // ==========================================
 // 1. FLUJO PÚBLICO
@@ -56,11 +58,24 @@ export const crearVacante = async (req, res) => {
 export const verVacante = async (req, res) => {
     try {
         const id = req.params.id;
-        const vacante = await showVacante(id, true); // Incrementamos visualizaciones
-        if (!vacante) {
+        const vacanteModel = await VacantesModel.findByPk(id, {
+            include: [
+                {
+                    model: Usuario,
+                    as: 'creador',
+                    attributes: ['id', 'nombre', 'email', 'foto_perfil']
+                }
+            ]
+        });
+
+        if (!vacanteModel) {
             req.flash('error', 'Vacante no encontrada');
             return res.redirect('/vacantes');
         }
+
+        await vacanteModel.increment('visualizaciones');
+
+        const vacante = vacanteModel.toJSON();
 
         // Verificar si el usuario ya se ha postulado previamente a esta vacante
         let postulacionPrevia = null;
@@ -113,14 +128,28 @@ export const verDetallesMisVacantes = async (req, res) => {
             return res.redirect('/vacantes/mis-vacantes');
         }
         
-        const candidatos = await getCandidatosPorVacante(id);
-        
+        const pagina = req.query.pagina ? parseInt(req.query.pagina) : 1;
+        const limit = 10;
+
+        const { candidatos: candidatosRaw, paginacion } = await getCandidatosPorVacante(id, { pagina, limit });
+
+        const candidatos = candidatosRaw.sort((a, b) => b.matchScore - a.matchScore);
+        const inicio = Math.max(1, paginacion.paginaActual - 2);
+        const fin = Math.min(paginacion.totalPaginas, paginacion.paginaActual + 2);
+        const paginas = Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
+        const paginaAnterior = paginacion.paginaActual - 1;
+        const paginaSiguiente = paginacion.paginaActual + 1;
+
         res.render('vacantes/detalles', {
             nombrePagina: `Candidatos: ${vacante.titulo}`,
             tagline: 'Administra los postulantes a esta oferta',
             nombre: req.session.usuario.nombre,
             vacante,
-            candidatos // Pasamos los candidatos (que ahora incluyen sus CVs) a la vista
+            candidatos,
+            paginacion,
+            paginas,
+            paginaAnterior,
+            paginaSiguiente
         });
     } catch (error) {
         req.flash('error', 'Hubo un error al cargar los detalles de la vacante');

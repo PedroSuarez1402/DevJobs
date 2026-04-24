@@ -51,6 +51,16 @@ app.engine('handlebars', engine({
             params.set('pagina', pagina);
             return params.toString();
         },
+        buildQueryAdmin: (filtros, pagina) => {
+            const params = new URLSearchParams();
+            Object.entries(filtros || {}).forEach(([key, value]) => {
+                if (value !== undefined && value !== null && value !== '' && key !== 'pagina') {
+                    params.set(key, String(value));
+                }
+            });
+            params.set('pagina', pagina);
+            return params.toString();
+        },
         formatDate: (dateString) => {
             if (!dateString) return '';
             const d = new Date(dateString);

@@ -1,4 +1,5 @@
 import { Vacantes, Usuario, Postulaciones, CVs } from "../models/index.js"
+import { Op } from "sequelize"
 import { calcularMatchScore } from "../utils/matchScore.js"
 
 // ==========================================
@@ -102,9 +103,11 @@ export const eliminarVacanteDb = async (id) => {
 }
 // --- NUEVAS FUNCIONES PARA LOS DETALLES ---
 
-export const getCandidatosPorVacante = async (id) => {
+export const getCandidatosPorVacante = async (id, { pagina = 1, limit = 10 } = {}) => {
     try {
-        const candidatos = await Postulaciones.findAll({
+        const offset = (pagina - 1) * limit
+
+        const { count, rows } = await Postulaciones.findAndCountAll({
             where: { vacante_id: id },
             include: [
                 {
@@ -113,22 +116,66 @@ export const getCandidatosPorVacante = async (id) => {
                 },
                 {
                     model: Usuario,
-                    attributes: ['id', 'nombre', 'foto_perfil', 'email'],
-                    include: [{ model: CVs, attributes: ['url_archivo', 'tipo', 'skills_tecnicas'] }] 
+                    attributes: ['id', 'nombre', 'foto_perfil', 'email', 'skills', 'telefono']
                 }
-            ]
-        });
-        
-        // Calcular match score para cada candidato
-        return candidatos.map(postulacion => {
-            const data = postulacion.toJSON();
-            const skillsVacante = data.vacante?.skills || '';
-            const cv = data.usuario?.cvs?.[0];
-            const skillsCandidato = cv?.skills_tecnicas || '';
-            
-            data.matchScore = calcularMatchScore(skillsVacante, skillsCandidato);
-            return data;
-        });
+            ],
+            order: [['fecha_postulacion', 'DESC']],
+            limit,
+            offset,
+            distinct: true
+        })
+
+        const usuariosIds = rows
+            .map(r => r?.usuario?.id)
+            .filter(Boolean)
+
+        const cvs = usuariosIds.length
+            ? await CVs.findAll({
+                where: { usuario_id: { [Op.in]: usuariosIds } },
+                attributes: ['usuario_id', 'url_archivo', 'tipo', 'skills_tecnicas'],
+                order: [['fecha_actualizacion', 'DESC']],
+                raw: true
+            })
+            : []
+
+        const cvPorUsuario = new Map()
+        for (const cv of cvs) {
+            if (!cvPorUsuario.has(cv.usuario_id)) {
+                cvPorUsuario.set(cv.usuario_id, cv)
+            }
+        }
+
+        const totalPaginas = Math.ceil(count / limit) || 1
+
+        const candidatos = rows.map(postulacion => {
+            const data = postulacion.toJSON()
+
+            const userId = data.usuario?.id
+            const cv = userId ? cvPorUsuario.get(userId) : null
+
+            if (data.usuario) {
+                data.usuario.cvs = cv ? [cv] : []
+            }
+
+            const skillsVacante = data.vacante?.skills || ''
+            const skillsCandidato = data.usuario?.skills || cv?.skills_tecnicas || ''
+            const telefonoLimpio = (data.usuario?.telefono || '').replace(/\D/g, '')
+
+            data.matchScore = calcularMatchScore(skillsVacante, skillsCandidato)
+            data.whatsappUrl = telefonoLimpio ? `https://wa.me/${telefonoLimpio}` : null
+            return data
+        })
+
+        return {
+            candidatos,
+            paginacion: {
+                paginaActual: pagina,
+                totalPaginas,
+                totalCandidatos: count,
+                haySiguiente: pagina < totalPaginas,
+                hayAnterior: pagina > 1
+            }
+        }
     } catch (error) {
         console.error("Error al obtener los candidatos:", error);
         throw error;

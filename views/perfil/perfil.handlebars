@@ -1,9 +1,16 @@
 <div class="max-w-4xl mx-auto space-y-8">
+    {{#if volverAdmin}}
+        <div class="flex items-center justify-between gap-3">
+            <a href="/admin/usuarios" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-300 hover:text-emerald-200">
+                <i class="fa-solid fa-arrow-left"></i> Volver a SuperAdmin
+            </a>
+        </div>
+    {{/if}}
     <!-- Header del Perfil -->
     <div class="bg-gray-900 border border-gray-800 rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 shadow-xl">
         <div class="relative group">
-            {{#if usuario.foto_perfil}}
-                <img src="/uploads/perfiles/{{usuario.foto_perfil}}" alt="{{usuario.nombre}}" class="w-32 h-32 rounded-full object-cover border-4 border-emerald-500/20 group-hover:border-emerald-500 transition-all">
+            {{#if perfilUsuario.foto_perfil}}
+                <img src="/uploads/perfiles/{{perfilUsuario.foto_perfil}}" alt="{{perfilUsuario.nombre}}" class="w-32 h-32 rounded-full object-cover border-4 border-emerald-500/20 group-hover:border-emerald-500 transition-all">
             {{else}}
                 <div class="w-32 h-32 rounded-full bg-emerald-500/10 flex items-center justify-center border-4 border-emerald-500/20 group-hover:border-emerald-500 transition-all">
                     <i class="fa-solid fa-user text-5xl text-emerald-500"></i>
@@ -12,12 +19,12 @@
         </div>
         
         <div class="flex-1 text-center md:text-left space-y-2">
-            <h1 class="text-3xl font-black text-white">{{usuario.nombre}}</h1>
+            <h1 class="text-3xl font-black text-white">{{perfilUsuario.nombre}}</h1>
             <p class="text-emerald-400 text-lg font-bold">{{cv.titular}}</p>
             <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-400 mt-4">
                 <div class="flex items-center gap-2">
                     <i class="fa-solid fa-envelope"></i>
-                    <span>{{usuario.email}}</span>
+                    <span>{{perfilUsuario.email}}</span>
                 </div>
                 {{#if cv.telefono}}
                 <div class="flex items-center gap-2">
@@ -38,6 +45,9 @@
             {{#if esPerfilPropio}}
             <a href="/perfil/editar" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center shadow-lg shadow-emerald-500/20">
                 <i class="fa-solid fa-pen-to-square mr-2"></i>Editar Perfil
+            </a>
+            <a href="/perfil/exportar-pdf" class="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center border border-gray-700">
+                <i class="fa-solid fa-file-arrow-down mr-2"></i>Descargar CV (PDF)
             </a>
             {{/if}}
             {{#if cv.url_archivo}}

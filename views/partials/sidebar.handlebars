@@ -31,6 +31,15 @@
             <span class="font-medium">Mis Postulaciones</span>
         </a>
 
+        {{#if (eq usuario.rol 'admin')}}
+            <a href="/admin"
+                class="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-emerald-500/10 hover:text-emerald-400 rounded-md transition-all group">
+                <i
+                    class="fa-solid fa-shield-halved w-4.5 text-center text-gray-500 group-hover:text-emerald-400 transition-colors text-xs"></i>
+                <span class="font-medium">SuperAdmin</span>
+            </a>
+        {{/if}}
+
         <div class="mt-auto pt-6 border-t border-gray-900">
             <a href="/perfil"
                 class="flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:bg-emerald-500/10 hover:text-emerald-400 rounded-md transition-all group">
