@@ -39,6 +39,9 @@
             <a href="/perfil/editar" class="bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-black uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center shadow-lg shadow-emerald-500/20">
                 <i class="fa-solid fa-pen-to-square mr-2"></i>Editar Perfil
             </a>
+            <a href="/perfil/exportar-pdf" class="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center border border-gray-700">
+                <i class="fa-solid fa-file-arrow-down mr-2"></i>Descargar CV (PDF)
+            </a>
             {{/if}}
             {{#if cv.url_archivo}}
             <a href="/uploads/cvs/{{cv.url_archivo}}" target="_blank" class="bg-gray-800 hover:bg-gray-700 text-white font-bold uppercase py-2.5 px-6 rounded-lg text-xs transition-all text-center border border-gray-700">

@@ -1,4 +1,6 @@
 import * as perfilService from '../services/perfilService.js';
+import puppeteer from 'puppeteer';
+import fs from 'node:fs/promises';
 
 /* Mostrar el perfil del usuario */
 export const mostrarPerfil = async (req, res) => {
@@ -78,5 +80,123 @@ export const editarPerfil = async (req, res) => {
 
         req.flash('error', error.message || 'No se pudo actualizar el perfil');
         res.redirect('/perfil/editar');
+    }
+}
+
+export const exportarPDF = async (req, res) => {
+    let browser;
+    try {
+        const { id } = req.session.usuario;
+        const { usuario, cv } = await perfilService.obtenerPerfilCompleto(id);
+
+        const forwardedProto = String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
+        const forwardedHost = String(req.headers['x-forwarded-host'] || '').split(',')[0].trim();
+        const proto = forwardedProto || req.protocol;
+        const host = forwardedHost || req.get('host');
+        const baseUrl = (process.env.APP_URL || `${proto}://${host}`).replace(/\/$/, '');
+
+        let css = '';
+        try {
+            css = await fs.readFile(new URL('../../public/dist/app.css', import.meta.url), 'utf8');
+        } catch (_) {}
+
+        let fotoPerfilSrc = null;
+        if (usuario.foto_perfil) {
+            try {
+                const fotoFileUrl = new URL(`../../public/uploads/perfiles/${usuario.foto_perfil}`, import.meta.url);
+                const fotoBuffer = await fs.readFile(fotoFileUrl);
+                const fileName = String(usuario.foto_perfil).toLowerCase();
+                const mime =
+                    fileName.endsWith('.png')
+                        ? 'image/png'
+                        : fileName.endsWith('.webp')
+                          ? 'image/webp'
+                          : 'image/jpeg';
+                fotoPerfilSrc = `data:${mime};base64,${fotoBuffer.toString('base64')}`;
+            } catch (_) {
+                fotoPerfilSrc = `${baseUrl}/uploads/perfiles/${usuario.foto_perfil}`;
+            }
+        }
+
+        const parseSkills = (value) => {
+            if (!value) return [];
+            try {
+                const parsed = JSON.parse(value);
+                if (Array.isArray(parsed)) {
+                    return parsed.map((x) => (typeof x === 'string' ? x : x?.value)).filter(Boolean);
+                }
+            } catch (_) {}
+            return String(value)
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+        };
+
+        const skillsUsuario = parseSkills(usuario.skills);
+
+        const html = await new Promise((resolve, reject) => {
+            res.render(
+                'perfil/cv-pdf',
+                {
+                    layout: false,
+                    usuario,
+                    cv: cv || {},
+                    baseUrl,
+                    css,
+                    fotoPerfilSrc,
+                    skillsUsuario
+                },
+                (err, str) => {
+                    if (err) reject(err);
+                    else resolve(str);
+                }
+            );
+        });
+
+        const launchOptions = {
+            headless: 'new',
+            args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+        };
+        if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+            launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+        }
+
+        try {
+            browser = await puppeteer.launch(launchOptions);
+        } catch (_) {
+            browser = await puppeteer.launch({ ...launchOptions, headless: true });
+        }
+
+        const page = await browser.newPage();
+        page.setDefaultTimeout(30000);
+        page.setDefaultNavigationTimeout(30000);
+        await page.emulateMediaType('screen');
+        await page.setContent(html, { waitUntil: 'load' });
+
+        const buffer = await page.pdf({
+            format: 'A4',
+            printBackground: true,
+            preferCSSPageSize: true,
+            margin: {
+                top: '18mm',
+                right: '14mm',
+                bottom: '18mm',
+                left: '14mm'
+            }
+        });
+
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', 'attachment; filename="CV_DevJobs.pdf"');
+        res.send(buffer);
+    } catch (error) {
+        console.error(error);
+        req.flash('error', 'No se pudo generar el PDF del CV');
+        res.redirect('/perfil');
+    } finally {
+        if (browser) {
+            try {
+                await browser.close();
+            } catch (_) {}
+        }
     }
 }

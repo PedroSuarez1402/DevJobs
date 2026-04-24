@@ -25,6 +25,7 @@
     "multer": "^2.1.1",
     "mysql2": "^3.19.1",
     "nodemailer": "^8.0.2",
+    "puppeteer": "^24.10.2",
     "select2": "^4.1.0-rc.0",
     "sequelize": "^6.37.8",
     "sharp": "^0.34.5",

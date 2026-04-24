@@ -1,0 +1,76 @@
+<section class="space-y-6">
+    <div class="flex items-start justify-between gap-4">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Dashboard</h1>
+            <p class="text-sm text-gray-400 mt-1">Métricas globales del sistema</p>
+        </div>
+        <div class="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-4 py-2 text-xs font-black uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            SuperAdmin
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="rounded-2xl border border-gray-900 bg-gray-950/60 p-6 shadow-lg shadow-black/20">
+            <div class="flex items-center justify-between">
+                <div class="text-xs font-black uppercase tracking-wider text-gray-500">Usuarios</div>
+                <div class="text-emerald-400"><i class="fa-solid fa-users"></i></div>
+            </div>
+            <div class="mt-4 text-4xl font-black text-white">{{totalUsuarios}}</div>
+            <div class="text-sm text-gray-400 mt-1">Total registrados</div>
+        </div>
+
+        <div class="rounded-2xl border border-gray-900 bg-gray-950/60 p-6 shadow-lg shadow-black/20">
+            <div class="flex items-center justify-between">
+                <div class="text-xs font-black uppercase tracking-wider text-gray-500">Vacantes</div>
+                <div class="text-emerald-400"><i class="fa-solid fa-briefcase"></i></div>
+            </div>
+            <div class="mt-4 text-4xl font-black text-white">{{totalVacantes}}</div>
+            <div class="text-sm text-gray-400 mt-1">Total publicadas</div>
+        </div>
+
+        <div class="rounded-2xl border border-gray-900 bg-gray-950/60 p-6 shadow-lg shadow-black/20">
+            <div class="flex items-center justify-between">
+                <div class="text-xs font-black uppercase tracking-wider text-gray-500">Postulaciones</div>
+                <div class="text-emerald-400"><i class="fa-solid fa-file-lines"></i></div>
+            </div>
+            <div class="mt-4 text-4xl font-black text-white">{{totalPostulaciones}}</div>
+            <div class="text-sm text-gray-400 mt-1">Total realizadas</div>
+        </div>
+    </div>
+
+    <div class="rounded-2xl border border-gray-900 bg-gray-950/60 shadow-lg shadow-black/20 overflow-hidden">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-900">
+            <h2 class="text-sm font-black uppercase tracking-wider text-white">Últimos usuarios registrados</h2>
+            <div class="text-xs text-gray-500">Últimos 5</div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-950">
+                    <tr class="text-left text-gray-400">
+                        <th class="px-6 py-3 font-black uppercase tracking-wider text-xs">ID</th>
+                        <th class="px-6 py-3 font-black uppercase tracking-wider text-xs">Nombre</th>
+                        <th class="px-6 py-3 font-black uppercase tracking-wider text-xs">Email</th>
+                        <th class="px-6 py-3 font-black uppercase tracking-wider text-xs">Rol</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-900">
+                    {{#each ultimosUsuarios}}
+                        <tr class="hover:bg-emerald-500/5">
+                            <td class="px-6 py-4 text-gray-300 font-bold">{{id}}</td>
+                            <td class="px-6 py-4 text-white font-bold">{{nombre}}</td>
+                            <td class="px-6 py-4 text-gray-300">{{email}}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-full border border-gray-800 bg-gray-950 px-3 py-1 text-xs font-black uppercase tracking-wider text-gray-300">
+                                    {{rol}}
+                                </span>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+

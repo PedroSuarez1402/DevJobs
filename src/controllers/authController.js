@@ -65,7 +65,8 @@ export const login = async (req, res) => {
             id: usuario.id,
             nombre: usuario.nombre,
             email: usuario.email,
-            foto_perfil: usuario.foto_perfil
+            foto_perfil: usuario.foto_perfil,
+            rol: usuario.rol
         }
         /* Respuesta de exito */
         req.flash('exito', 'Inicio de sesión correctamente');
