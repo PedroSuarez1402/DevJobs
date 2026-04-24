@@ -18,13 +18,15 @@ export const mostrarPerfil = async (req, res) => {
         
         // Verificar si el perfil que se está viendo es el del usuario logueado
         const esPerfilPropio = usuarioId == req.session.usuario.id;
+        const volverAdmin = req.query?.from === 'admin' && req.session?.usuario?.rol === 'admin';
 
         res.render('perfil/perfil', {
             nombrePagina: esPerfilPropio ? 'Mi Perfil' : `Perfil: ${usuario.nombre}`,
             tagline: esPerfilPropio ? 'Gestiona tu información profesional y CV' : `Conoce la trayectoria de ${usuario.nombre}`,
-            usuario,
+            perfilUsuario: usuario,
             cv,
             esPerfilPropio,
+            volverAdmin,
             mostrarNav: true
         });
     } catch (error) {

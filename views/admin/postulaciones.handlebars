@@ -1,0 +1,82 @@
+<section class="space-y-6">
+    <div class="flex items-center justify-between gap-3">
+        <a href="/admin" class="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald-300 hover:text-emerald-200">
+            <i class="fa-solid fa-arrow-left"></i> Volver al panel
+        </a>
+    </div>
+    <div class="rounded-2xl border border-gray-900 bg-gray-950/60 p-4 sm:p-6">
+        <form method="GET" action="/admin/postulaciones" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="text" name="q" value="{{filtros.q}}" placeholder="Buscar por candidato o vacante" class="md:col-span-3 w-full rounded-lg border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500">
+            <select name="estado" class="w-full rounded-lg border border-gray-800 bg-gray-900 px-3 py-2 text-sm text-white focus:outline-none focus:border-emerald-500">
+                <option value="">Todos los estados</option>
+                <option value="pendiente" {{#if (eq filtros.estado "pendiente")}}selected{{/if}}>Pendiente</option>
+                <option value="aceptado" {{#if (eq filtros.estado "aceptado")}}selected{{/if}}>Aceptado</option>
+                <option value="rechazado" {{#if (eq filtros.estado "rechazado")}}selected{{/if}}>Rechazado</option>
+            </select>
+            <div class="md:col-span-4 flex gap-2">
+                <button type="submit" class="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-gray-950 text-xs font-black uppercase px-4 py-2 rounded-lg">
+                    <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                </button>
+                <a href="/admin/postulaciones" class="inline-flex items-center gap-2 border border-gray-800 hover:border-gray-700 text-gray-300 text-xs font-black uppercase px-4 py-2 rounded-lg">
+                    Limpiar
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="rounded-2xl border border-gray-900 bg-gray-950/60 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-900 text-sm text-gray-400">
+            Total de postulaciones: <span class="text-white font-bold">{{paginacion.total}}</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-gray-950">
+                    <tr class="text-left text-gray-400">
+                        <th class="px-6 py-3 text-xs font-black uppercase">ID</th>
+                        <th class="px-6 py-3 text-xs font-black uppercase">Candidato</th>
+                        <th class="px-6 py-3 text-xs font-black uppercase">Vacante</th>
+                        <th class="px-6 py-3 text-xs font-black uppercase">Estado</th>
+                        <th class="px-6 py-3 text-xs font-black uppercase">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-900">
+                    {{#each postulaciones}}
+                        <tr class="hover:bg-emerald-500/5">
+                            <td class="px-6 py-4 text-gray-300 font-bold">{{id}}</td>
+                            <td class="px-6 py-4 text-white font-bold">{{usuario.nombre}} <span class="text-gray-500">({{usuario.email}})</span></td>
+                            <td class="px-6 py-4 text-gray-300">{{vacante.titulo}}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-black border border-gray-700 text-gray-200 uppercase">{{estado}}</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                {{#if (eq estado "rechazado")}}
+                                    <form action="/admin/postulaciones/{{id}}/restablecer" method="POST" data-swal-confirm="1" data-swal-title="¿Restablecer postulación?" data-swal-text="Esta acción devolverá la postulación al estado pendiente." data-swal-confirm-text="Sí, restablecer" data-swal-confirm-color="#10b981">
+                                        <button type="submit" class="text-xs font-black uppercase px-3 py-1.5 rounded-md bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/25">Restablecer</button>
+                                    </form>
+                                {{else}}
+                                    <form action="/admin/postulaciones/{{id}}/rechazar" method="POST" data-swal-confirm="1" data-swal-title="¿Inactivar postulación?" data-swal-text="Esta acción marcará la postulación como rechazada." data-swal-confirm-text="Sí, inactivar" data-swal-confirm-color="#ef4444">
+                                        <button type="submit" class="text-xs font-black uppercase px-3 py-1.5 rounded-md bg-red-500/15 text-red-300 hover:bg-red-500/25">Inactivar</button>
+                                    </form>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{#if (gt paginacion.totalPaginas 1)}}
+        <div class="flex items-center justify-center gap-2">
+            {{#if paginacion.hayAnterior}}
+                <a href="/admin/postulaciones?{{buildQueryAdmin filtros (subtract paginacion.paginaActual 1)}}" class="text-xs font-black px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white">Anterior</a>
+            {{/if}}
+            {{#each (range 1 paginacion.totalPaginas)}}
+                <a href="/admin/postulaciones?{{buildQueryAdmin ../filtros this}}" class="{{#if (eq this ../paginacion.paginaActual)}}bg-emerald-500 text-gray-950{{else}}bg-gray-800 hover:bg-gray-700 text-white{{/if}} text-xs font-black px-3 py-2 rounded-lg">{{this}}</a>
+            {{/each}}
+            {{#if paginacion.haySiguiente}}
+                <a href="/admin/postulaciones?{{buildQueryAdmin filtros (sum paginacion.paginaActual 1)}}" class="text-xs font-black px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white">Siguiente</a>
+            {{/if}}
+        </div>
+    {{/if}}
+</section>

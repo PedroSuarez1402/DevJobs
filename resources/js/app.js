@@ -58,6 +58,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (row) row.remove();
     };
 
+    document.querySelectorAll('form[data-swal-confirm="1"]').forEach((form) => {
+        if (form.dataset.swalBound === '1') return;
+        form.dataset.swalBound = '1';
+
+        form.addEventListener('submit', (e) => {
+            if (form.dataset.swalConfirmed === '1') return;
+            e.preventDefault();
+
+            const title = form.dataset.swalTitle || '¿Confirmar acción?';
+            const text = form.dataset.swalText || '';
+            const confirmText = form.dataset.swalConfirmText || 'Confirmar';
+            const confirmColor = form.dataset.swalConfirmColor || '#10b981';
+
+            Swal.fire({
+                title,
+                text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: confirmColor,
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: confirmText,
+                cancelButtonText: 'Cancelar',
+                background: '#111827',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.dataset.swalConfirmed = '1';
+                    HTMLFormElement.prototype.submit.call(form);
+                }
+            });
+        });
+    });
+
     const initDatepickers = (root = document) => {
         root.querySelectorAll('.datepicker').forEach((el) => {
             if (el._flatpickr) return;
